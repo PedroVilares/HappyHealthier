@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">HappyHealthier</string>
+    <string name="facebook_application_id" translatable="false">2397311947225367</string>
+    <string name="facebook_login_protocol_key" translatable="false">fb2397311947225367</string>
+    <string name="sign_out">Sign Out</string>
 </resources>

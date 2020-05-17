@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "547795222687",
+    "firebase_url": "https://happyhealthier-f6c45.firebaseio.com",
+    "project_id": "happyhealthier-f6c45",
+    "storage_bucket": "happyhealthier-f6c45.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:547795222687:android:5cee585af24a72d13462aa",
+        "android_client_info": {
+          "package_name": "com.example.happyhealthier"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "547795222687-hcf148pd6293lcg2ede1cnbkk9udq59n.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBmXJ9NqSILUOgedOcgVnRuqhsjlGIKMBE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "547795222687-hcf148pd6293lcg2ede1cnbkk9udq59n.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
