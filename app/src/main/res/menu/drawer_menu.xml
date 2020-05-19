@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn='navigation_view'>
+
+    <group android:checkableBehavior="single">
+        <item android:id="@+id/nav_measures"
+            android:icon="@drawable/ic_measures"
+            android:title="@string/medi_es"/>
+        <item android:id="@+id/nav_health"
+            android:icon="@drawable/ic_health"
+            android:title="@string/sa_de"/>
+        <item android:id="@+id/nav_exercise"
+            android:icon="@drawable/ic_exercise"
+            android:title="@string/exerc_cio"/>
+        <item android:id="@+id/nav_profile"
+            android:icon="@drawable/ic_profile"
+            android:title="@string/perfil"/>
+
+    </group>
+
+    <group android:checkableBehavior="single">
+
+        <item
+            android:title="@string/mais">
+
+            <menu>
+
+                <item android:id="@+id/nav_settings"
+                    android:icon="@drawable/ic_settings"
+                    android:title="@string/defini_es"/>
+                <item android:id="@+id/nav_about"
+                    android:icon="@drawable/ic_about"
+                    android:title="@string/sobre"/>
+            </menu>
+
+        </item>
+
+    </group>
+
+</menu>

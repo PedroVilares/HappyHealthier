@@ -3,4 +3,17 @@
     <string name="facebook_application_id" translatable="false">2397311947225367</string>
     <string name="facebook_login_protocol_key" translatable="false">fb2397311947225367</string>
     <string name="sign_out">Sign Out</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="home_second">Home Second</string>
+    <string name="medi_es">Medições</string>
+    <string name="sa_de">Saúde</string>
+    <string name="exerc_cio">Exercício</string>
+    <string name="perfil">Perfil</string>
+    <string name="defini_es">Definições</string>
+    <string name="sobre">Sobre</string>
+    <string name="placeholder_text">placeholder_text</string>
+    <string name="mais">Mais</string>
 </resources>
