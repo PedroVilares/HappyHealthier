@@ -17,10 +17,12 @@
         map:layout_constraintTop_toTopOf="parent" />
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/cardView2"
         android:layout_width="match_parent"
         android:layout_height="350dp"
+        android:visibility="invisible"
         map:layout_constraintBottom_toBottomOf="parent"
-        map:layout_constraintEnd_toEndOf="parent" >
+        map:layout_constraintEnd_toEndOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -116,7 +118,6 @@
                 android:layout_height="65dp"
                 android:layout_marginEnd="98dp"
                 android:background="@drawable/circle_play_button"
-                android:src="@drawable/pause-white-48dp"
                 map:layout_constraintBottom_toBottomOf="parent"
                 map:layout_constraintEnd_toEndOf="parent"
                 map:layout_constraintTop_toTopOf="parent"
@@ -128,54 +129,28 @@
                 android:layout_height="65dp"
                 android:layout_marginEnd="56dp"
                 android:background="@drawable/circle_stop_button"
-                android:src="@drawable/baseline_stop_white_48dp"
                 map:layout_constraintBottom_toBottomOf="parent"
                 map:layout_constraintEnd_toStartOf="@+id/playButton1"
                 map:layout_constraintTop_toTopOf="parent"
                 map:layout_constraintVertical_bias="0.807" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/cardView"
+        android:id="@+id/cardView1"
         android:layout_width="match_parent"
         android:layout_height="130dp"
         android:background="#FFFFFF"
         android:elevation="7dp"
-        android:visibility="invisible"
+        android:visibility="visible"
         map:layout_constraintBottom_toBottomOf="parent"
         map:layout_constraintStart_toStartOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-
-            <Chronometer
-                android:layout_width="156dp"
-                android:layout_height="wrap_content"
-                android:text="00:00"
-                android:textAlignment="center"
-                android:textSize="60sp"
-                android:textStyle="bold"
-                map:layout_constraintBottom_toBottomOf="parent"
-                map:layout_constraintEnd_toEndOf="parent"
-                map:layout_constraintHorizontal_bias="0.937"
-                map:layout_constraintStart_toStartOf="parent"
-                map:layout_constraintTop_toTopOf="parent" />
-
-            <ImageButton
-                android:id="@+id/playButton"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:background="@drawable/circle_play_button"
-                android:elevation="5dp"
-                android:src="@drawable/ic_play_arrow_black_24dp"
-                map:layout_constraintBottom_toBottomOf="parent"
-                map:layout_constraintEnd_toEndOf="parent"
-                map:layout_constraintHorizontal_bias="0.392"
-                map:layout_constraintStart_toStartOf="parent"
-                map:layout_constraintTop_toTopOf="parent" />
 
             <ImageButton
                 android:id="@+id/musicButton"
@@ -189,6 +164,28 @@
                 map:layout_constraintStart_toStartOf="parent"
                 map:layout_constraintTop_toTopOf="parent"
                 map:layout_constraintVertical_bias="0.552" />
+
+            <ImageButton
+                android:id="@+id/playButton"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_marginEnd="10dp"
+                android:background="@drawable/circle_play_button"
+                android:elevation="5dp"
+                android:src="@drawable/ic_play_arrow_black_24dp"
+                map:layout_constraintBottom_toBottomOf="parent"
+                map:layout_constraintEnd_toStartOf="@+id/spinnerExercises"
+                map:layout_constraintTop_toTopOf="parent" />
+
+            <Spinner
+                android:id="@+id/spinnerExercises"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:spinnerMode="dropdown"
+                map:layout_constraintBottom_toBottomOf="parent"
+                map:layout_constraintEnd_toEndOf="parent"
+                map:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
