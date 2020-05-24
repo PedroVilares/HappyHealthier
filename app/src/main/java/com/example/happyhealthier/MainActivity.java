@@ -63,8 +63,9 @@ public class MainActivity extends AppCompatActivity {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         String text = navUsername.getText().toString();
         Log.e("name",text);
-        assert user != null;
-        navUsername.setText(user.getDisplayName());
+        if(user != null) {
+            navUsername.setText(user.getDisplayName());
+        }
 
 
         //Getting different login providers (Email,Google,Facebook)

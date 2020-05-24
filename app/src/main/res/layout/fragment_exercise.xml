@@ -20,7 +20,7 @@
         android:id="@+id/cardView2"
         android:layout_width="match_parent"
         android:layout_height="320dp"
-        android:visibility="invisible"
+        android:visibility="visible"
         map:layout_constraintBottom_toBottomOf="parent"
         map:layout_constraintEnd_toEndOf="parent">
 
@@ -45,7 +45,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                android:text="TextView"
+                android:text="00,0 km"
                 android:textSize="20sp"
                 android:textStyle="bold"
                 map:layout_constraintEnd_toEndOf="parent"
@@ -70,7 +70,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
                 android:layout_marginBottom="59dp"
-                android:text="0"
+                android:text="0 kcals"
                 android:textSize="20sp"
                 map:layout_constraintBottom_toTopOf="@+id/playButton1"
                 map:layout_constraintEnd_toEndOf="parent"
@@ -126,10 +126,12 @@
 
             <ImageButton
                 android:id="@+id/playButton1"
-                android:layout_width="70dp"
-                android:layout_height="70dp"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
                 android:layout_marginEnd="98dp"
                 android:background="@drawable/circle_play_button"
+                android:elevation="5dp"
+                android:src="@drawable/ic_pause"
                 map:layout_constraintBottom_toBottomOf="parent"
                 map:layout_constraintEnd_toEndOf="parent"
                 map:layout_constraintTop_toTopOf="parent"
@@ -137,10 +139,12 @@
 
             <ImageButton
                 android:id="@+id/stopButton"
-                android:layout_width="70dp"
-                android:layout_height="70dp"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
                 android:layout_marginEnd="56dp"
                 android:background="@drawable/circle_stop_button"
+                android:elevation="5dp"
+                android:src="@drawable/ic_square"
                 map:layout_constraintBottom_toBottomOf="parent"
                 map:layout_constraintEnd_toStartOf="@+id/playButton1"
                 map:layout_constraintTop_toTopOf="parent"
@@ -156,7 +160,7 @@
         android:layout_height="130dp"
         android:background="#FFFFFF"
         android:elevation="7dp"
-        android:visibility="visible"
+        android:visibility="invisible"
         map:layout_constraintBottom_toBottomOf="parent"
         map:layout_constraintStart_toStartOf="parent">
 

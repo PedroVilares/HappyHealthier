@@ -2,6 +2,8 @@ package com.example.happyhealthier.fragments;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.drawable.Icon;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -9,9 +11,11 @@ import android.hardware.SensorManager;
 import android.os.Bundle;
 
 import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.os.SystemClock;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,11 +51,12 @@ public class ExerciseFragment extends Fragment implements AdapterView.OnItemSele
     private GoogleMap mGoogleMap;
 
     Spinner spinnerExercises;
-    String exerciseChosen;
-    ImageButton playButton;
+    ImageButton playButton,musicButton,pauseButton,stopButton;
     CardView card1,card2,card3;
     Chronometer chronometer;
     boolean isExercising = false;
+    String exerciseChosen;
+    long exerciseTime;
     TextView steps,kms;
 
 
@@ -87,7 +92,7 @@ public class ExerciseFragment extends Fragment implements AdapterView.OnItemSele
         //Spinner//
         spinnerExercises = v.findViewById(R.id.spinnerExercises);
         String[] exercises = getResources().getStringArray(R.array.exercises);
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireActivity().getApplicationContext(),android.R.layout.simple_spinner_item,exercises);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireActivity().getApplicationContext(),R.layout.spinner_item,exercises);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerExercises.setAdapter(adapter);
         spinnerExercises.setOnItemSelectedListener(this);
@@ -95,19 +100,61 @@ public class ExerciseFragment extends Fragment implements AdapterView.OnItemSele
         //StartExercise//
         playButton = v.findViewById(R.id.playButton);
         card1 = v.findViewById(R.id.cardView1);
+        card1.setVisibility(View.VISIBLE);
         card2 = v.findViewById(R.id.cardView2);
+        card2.setVisibility(View.INVISIBLE);
         chronometer = v.findViewById(R.id.time);
 
         playButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(requireActivity().getApplicationContext(),"Run bitch!",Toast.LENGTH_SHORT).show();
+                //Toast.makeText(requireActivity().getApplicationContext(),"Run bitch!",Toast.LENGTH_SHORT).show();
                 isExercising = true;
                 card1.setVisibility(View.INVISIBLE);
                 card2.setVisibility(View.VISIBLE);
                 chronometer.setBase(SystemClock.elapsedRealtime());
                 chronometer.setFormat("%s");
                 chronometer.start();
+            }
+        });
+
+        //PauseExercise//
+        pauseButton = v.findViewById(R.id.playButton1);
+        final long[] timeStopped = {0};
+        pauseButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isExercising) {
+                    pauseButton.setImageDrawable(
+                            ContextCompat.getDrawable(requireActivity().getApplicationContext(),R.drawable.ic_play_arrow_black_24dp));
+                    isExercising = false;
+                    chronometer.stop();
+                    timeStopped[0] = chronometer.getBase() - SystemClock.elapsedRealtime();
+
+                } else {
+                    pauseButton.setImageDrawable(
+                            ContextCompat.getDrawable(requireActivity().getApplicationContext(),R.drawable.ic_pause));
+                    chronometer.setBase(SystemClock.elapsedRealtime() + timeStopped[0]);
+                    chronometer.start();
+                    isExercising = true;
+                }
+            }
+        });
+
+        //StopExercise//
+        stopButton = v.findViewById(R.id.stopButton);
+        stopButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                isExercising = false;
+                exerciseTime = chronometer.getBase();
+                chronometer.stop();
+                chronometer.setBase(SystemClock.elapsedRealtime());
+                card1.setVisibility(View.VISIBLE);
+                card2.setVisibility(View.INVISIBLE);
+                //exerciseChosen
+                //distance
+                //steps
             }
         });
 
@@ -120,9 +167,18 @@ public class ExerciseFragment extends Fragment implements AdapterView.OnItemSele
         if (stepSensor != null) {
             sensorManager.registerListener((SensorEventListener) this,stepSensor, SensorManager.SENSOR_DELAY_UI);
         } else {
-            Toast.makeText(requireActivity().getApplicationContext(),"Sensor not found!",Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireActivity().getApplicationContext(),"Pedometer not found!",Toast.LENGTH_SHORT).show();
         }
 
+        //MusicButton//
+        musicButton = v.findViewById(R.id.musicButton);
+        musicButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.makeMainSelectorActivity(Intent.ACTION_MAIN,Intent.CATEGORY_APP_MUSIC));
+                startActivity(intent);
+            }
+        });
         return v;
     }
 
@@ -142,6 +198,8 @@ public class ExerciseFragment extends Fragment implements AdapterView.OnItemSele
     public void onDestroy() {
         super.onDestroy();
         mMapView.onDestroy();
+        card1.setVisibility(View.VISIBLE);
+        card2.setVisibility(View.INVISIBLE);
     }
 
     @Override
