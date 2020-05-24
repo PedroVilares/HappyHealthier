@@ -1,5 +1,11 @@
 package com.example.happyhealthier.fragments;
 
+import android.app.Activity;
+import android.content.Context;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 
 import androidx.cardview.widget.CardView;
@@ -11,7 +17,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.ImageButton;
 import android.widget.Spinner;
@@ -22,12 +27,16 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.MapStyleOptions;
+
+import java.util.Objects;
+
+import static androidx.core.content.ContextCompat.getSystemService;
+import static androidx.core.content.ContextCompat.getSystemServiceName;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ExerciseFragment extends Fragment implements AdapterView.OnItemSelectedListener{
+public class ExerciseFragment extends Fragment implements AdapterView.OnItemSelectedListener,SensorEventListener{
 
     public ExerciseFragment() {
         // Required empty public constructor
@@ -41,9 +50,10 @@ public class ExerciseFragment extends Fragment implements AdapterView.OnItemSele
     ImageButton playButton;
     CardView card1,card2,card3;
     Chronometer chronometer;
+    boolean isExercising = false;
+
 
     //TODO: Sacar o icone de stop
-    //TODO: Configurar o cronometro do cardview 2
     //TODO: Configurar os botões
     //TODO: Botão da música
 
@@ -53,13 +63,13 @@ public class ExerciseFragment extends Fragment implements AdapterView.OnItemSele
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_exercise, container, false);
 
-        //Maps
+        //Maps//
         mMapView = v.findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
         mMapView.onResume();
 
         try {
-            MapsInitializer.initialize(getActivity().getApplicationContext());
+            MapsInitializer.initialize(requireActivity().getApplicationContext());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -72,16 +82,15 @@ public class ExerciseFragment extends Fragment implements AdapterView.OnItemSele
             }
         });
 
-
-        //Spinner
+        //Spinner//
         spinnerExercises = v.findViewById(R.id.spinnerExercises);
         String[] exercises = getResources().getStringArray(R.array.exercises);
-        ArrayAdapter adapter = new ArrayAdapter(getActivity().getApplicationContext(),android.R.layout.simple_spinner_item,exercises);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireActivity().getApplicationContext(),android.R.layout.simple_spinner_item,exercises);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerExercises.setAdapter(adapter);
         spinnerExercises.setOnItemSelectedListener(this);
 
-        //StartExercise
+        //StartExercise//
         playButton = v.findViewById(R.id.playButton);
         card1 = v.findViewById(R.id.cardView1);
         card2 = v.findViewById(R.id.cardView2);
@@ -90,7 +99,8 @@ public class ExerciseFragment extends Fragment implements AdapterView.OnItemSele
         playButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getActivity().getApplicationContext(),"Run bitch!",Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireActivity().getApplicationContext(),"Run bitch!",Toast.LENGTH_SHORT).show();
+                isExercising = true;
                 card1.setVisibility(View.INVISIBLE);
                 card2.setVisibility(View.VISIBLE);
                 chronometer.setBase(SystemClock.elapsedRealtime());
@@ -98,6 +108,16 @@ public class ExerciseFragment extends Fragment implements AdapterView.OnItemSele
                 chronometer.start();
             }
         });
+
+        //StepCounter//
+        SensorManager sensorManager = (SensorManager) this.requireActivity().getSystemService(Activity.SENSOR_SERVICE);
+        assert sensorManager != null;
+        Sensor stepSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
+        if (stepSensor != null) {
+            sensorManager.registerListener((SensorEventListener) this,stepSensor, SensorManager.SENSOR_DELAY_UI);
+        } else {
+            Toast.makeText(requireActivity().getApplicationContext(),"Sensor not found!",Toast.LENGTH_SHORT).show();
+        }
 
         return v;
     }
@@ -138,4 +158,15 @@ public class ExerciseFragment extends Fragment implements AdapterView.OnItemSele
     public void onNothingSelected(AdapterView<?> parent) {
     }
 
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        if (isExercising){
+
+        }
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+    }
 }
