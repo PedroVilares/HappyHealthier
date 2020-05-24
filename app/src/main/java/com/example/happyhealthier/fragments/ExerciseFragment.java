@@ -20,6 +20,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Chronometer;
 import android.widget.ImageButton;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.happyhealthier.R;
@@ -51,6 +52,7 @@ public class ExerciseFragment extends Fragment implements AdapterView.OnItemSele
     CardView card1,card2,card3;
     Chronometer chronometer;
     boolean isExercising = false;
+    TextView steps,kms;
 
 
     //TODO: Sacar o icone de stop
@@ -111,6 +113,8 @@ public class ExerciseFragment extends Fragment implements AdapterView.OnItemSele
 
         //StepCounter//
         SensorManager sensorManager = (SensorManager) this.requireActivity().getSystemService(Activity.SENSOR_SERVICE);
+        steps = v.findViewById(R.id.stepsText);
+        kms = v.findViewById(R.id.distanceText);
         assert sensorManager != null;
         Sensor stepSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
         if (stepSensor != null) {
@@ -161,7 +165,8 @@ public class ExerciseFragment extends Fragment implements AdapterView.OnItemSele
     @Override
     public void onSensorChanged(SensorEvent event) {
         if (isExercising){
-
+            steps.setText(String.valueOf(event.values[0]));
+            kms.setText(String.valueOf(event.values[0]/1312.34));
         }
     }
 

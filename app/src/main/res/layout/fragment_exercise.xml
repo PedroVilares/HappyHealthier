@@ -20,7 +20,7 @@
         android:id="@+id/cardView2"
         android:layout_width="match_parent"
         android:layout_height="320dp"
-        android:visibility="visible"
+        android:visibility="invisible"
         map:layout_constraintBottom_toBottomOf="parent"
         map:layout_constraintEnd_toEndOf="parent">
 
@@ -70,10 +70,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
                 android:layout_marginBottom="59dp"
-                android:text="TextView"
+                android:text="0"
                 android:textSize="20sp"
                 map:layout_constraintBottom_toTopOf="@+id/playButton1"
                 map:layout_constraintEnd_toEndOf="parent"
+                map:layout_constraintHorizontal_bias="0.49"
                 map:layout_constraintStart_toStartOf="parent"
                 map:layout_constraintTop_toBottomOf="@+id/textView8" />
 
@@ -81,8 +82,8 @@
                 android:id="@+id/stepsText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="25dp"
-                android:text="TextView"
+                android:layout_marginStart="75dp"
+                android:text="0"
                 android:textSize="20sp"
                 map:layout_constraintBottom_toBottomOf="parent"
                 map:layout_constraintStart_toStartOf="parent"
@@ -155,7 +156,7 @@
         android:layout_height="130dp"
         android:background="#FFFFFF"
         android:elevation="7dp"
-        android:visibility="invisible"
+        android:visibility="visible"
         map:layout_constraintBottom_toBottomOf="parent"
         map:layout_constraintStart_toStartOf="parent">
 
