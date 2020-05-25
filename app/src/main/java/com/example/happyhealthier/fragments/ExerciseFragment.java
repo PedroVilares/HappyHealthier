@@ -1,5 +1,6 @@
 package com.example.happyhealthier.fragments;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -16,6 +17,7 @@ import androidx.fragment.app.Fragment;
 
 import android.os.SystemClock;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,22 +49,26 @@ public class ExerciseFragment extends Fragment implements AdapterView.OnItemSele
         // Required empty public constructor
     }
 
-    MapView mMapView;
+    private MapView mMapView;
     private GoogleMap mGoogleMap;
 
-    Spinner spinnerExercises;
-    ImageButton playButton,musicButton,pauseButton,stopButton;
-    CardView card1,card2,card3;
-    Chronometer chronometer;
-    boolean isExercising = false;
-    String exerciseChosen;
-    long exerciseTime;
-    TextView steps,kms;
+    private Spinner spinnerExercises;
+    private ImageButton playButton,musicButton,pauseButton,stopButton;
+    private CardView card1,card2,card3;
+    private Chronometer chronometer;
+    private boolean isExercising = false;
+    private String exerciseChosen;
+    private long exerciseTime;
+    private TextView steps,kms;
+    private int stepsTaken = 0;
+    private int stepsInitial = 0;
+    private SensorManager sensorManager = (SensorManager) this.requireActivity().getSystemService(Activity.SENSOR_SERVICE);
+    private Sensor stepSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
 
 
-    //TODO: Sacar o icone de stop
+
     //TODO: Configurar os botões
-    //TODO: Botão da música
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -152,6 +158,7 @@ public class ExerciseFragment extends Fragment implements AdapterView.OnItemSele
                 chronometer.setBase(SystemClock.elapsedRealtime());
                 card1.setVisibility(View.VISIBLE);
                 card2.setVisibility(View.INVISIBLE);
+
                 //exerciseChosen
                 //distance
                 //steps
@@ -159,13 +166,14 @@ public class ExerciseFragment extends Fragment implements AdapterView.OnItemSele
         });
 
         //StepCounter//
-        SensorManager sensorManager = (SensorManager) this.requireActivity().getSystemService(Activity.SENSOR_SERVICE);
+
         steps = v.findViewById(R.id.stepsText);
         kms = v.findViewById(R.id.distanceText);
         assert sensorManager != null;
-        Sensor stepSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
+
         if (stepSensor != null) {
-            sensorManager.registerListener((SensorEventListener) this,stepSensor, SensorManager.SENSOR_DELAY_UI);
+            sensorManager.registerListener(this,stepSensor, SensorManager.SENSOR_DELAY_UI);
+            Toast.makeText(requireActivity().getApplicationContext(),"Pedometer found!",Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(requireActivity().getApplicationContext(),"Pedometer not found!",Toast.LENGTH_SHORT).show();
         }
@@ -220,11 +228,20 @@ public class ExerciseFragment extends Fragment implements AdapterView.OnItemSele
     public void onNothingSelected(AdapterView<?> parent) {
     }
 
+    @SuppressLint("DefaultLocale")
     @Override
     public void onSensorChanged(SensorEvent event) {
         if (isExercising){
-            steps.setText(String.valueOf(event.values[0]));
-            kms.setText(String.valueOf(event.values[0]/1312.34));
+            Log.i("oi","Sensor reading");
+            if(stepsInitial<1) {
+                stepsInitial = (int) event.values[0];
+                Log.i("oi",String.valueOf(stepsInitial));
+            }
+
+            stepsTaken=(int) event.values[0]-stepsInitial;
+            steps.setText(String.valueOf(stepsTaken));
+            kms.setText(String.format("%.2f km", stepsTaken / 1312.34));
+
         }
     }
 
