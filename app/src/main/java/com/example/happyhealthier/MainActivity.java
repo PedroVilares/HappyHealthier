@@ -5,10 +5,12 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -19,6 +21,7 @@ import android.widget.Toast;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
 
 import com.example.happyhealthier.fragments.AboutFragment;
 import com.example.happyhealthier.fragments.ExerciseFragment;
@@ -29,26 +32,38 @@ import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+import pub.devrel.easypermissions.AfterPermissionGranted;
+import pub.devrel.easypermissions.AppSettingsDialog;
+import pub.devrel.easypermissions.EasyPermissions;
+
+public class MainActivity extends AppCompatActivity implements EasyPermissions.PermissionCallbacks{
 
     private static final int REQUEST_CODE = 1;
     List<AuthUI.IdpConfig> providers;
     Button mSignOutButton;
     DrawerLayout drawer;
 
+    //Permissions
+    private int STORAGE_PERMISSION_CODE = 1;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         //Navigation drawer
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -61,8 +76,8 @@ public class MainActivity extends AppCompatActivity {
         View headerView = navigationView.getHeaderView(0);
         TextView navUsername = headerView.findViewById(R.id.nav_nameText);
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        String text = navUsername.getText().toString();
-        Log.e("name",text);
+//        String text = navUsername.getText().toString();
+//        Log.e("name",text);
         if(user != null) {
             navUsername.setText(user.getDisplayName());
         }
@@ -76,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
         );
 
         if (savedInstanceState == null) {
-            //showSignInOptions();
+            showSignInOptions();
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new MeasurementsFragment()).commit();
             navigationView.setCheckedItem(R.id.nav_measures);
         }
@@ -89,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
                         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new MeasurementsFragment()).commit();
                         break;
                     case R.id.nav_exercise:
-                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ExerciseFragment()).commit();
+                        launchExerciseFragment();
                         break;
                     case R.id.nav_profile:
                         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ProfileFragment()).commit();
@@ -157,6 +172,11 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this,response.getError().getMessage(),Toast.LENGTH_SHORT).show();
             }
         }
+
+        for (Fragment fragment : getSupportFragmentManager().getFragments()) {
+            Log.i("frags",fragment.toString());
+            fragment.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
 
@@ -166,6 +186,36 @@ public class MainActivity extends AppCompatActivity {
             drawer.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
+        }
+    }
+
+    @AfterPermissionGranted(123)
+    private void launchExerciseFragment() {
+        String[] perms = {Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION};
+        if (EasyPermissions.hasPermissions(this,perms)){
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ExerciseFragment()).commit();
+        } else {
+            EasyPermissions.requestPermissions(this,"O acesso à sua localização permite que lhe mostremos um mapa" +
+                    " para saber sempre onde está durante os seus exercícios.",123,perms);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        EasyPermissions.onRequestPermissionsResult(requestCode,permissions,grantResults,this);
+    }
+
+    @Override
+    public void onPermissionsGranted(int requestCode, @NonNull List<String> perms) {
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ExerciseFragment()).commit();
+    }
+
+    @Override
+    public void onPermissionsDenied(int requestCode, @NonNull List<String> perms) {
+        if (EasyPermissions.somePermissionPermanentlyDenied(this,perms)){
+            new AppSettingsDialog.Builder(this).build().show();
         }
     }
 }

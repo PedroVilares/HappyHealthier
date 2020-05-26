@@ -4,11 +4,15 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.drawable.Icon;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 
 import androidx.cardview.widget.CardView;
@@ -30,11 +34,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.happyhealthier.R;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 import static androidx.core.content.ContextCompat.getSystemService;
@@ -62,14 +74,24 @@ public class ExerciseFragment extends Fragment implements AdapterView.OnItemSele
     private TextView steps,kms;
     private int stepsTaken = 0;
     private int stepsInitial = 0;
-    private SensorManager sensorManager = (SensorManager) this.requireActivity().getSystemService(Activity.SENSOR_SERVICE);
-    private Sensor stepSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
+
+    //Location//
+    private LocationManager locationManager;
+    private LocationListener locationListener;
+    FusedLocationProviderClient fusedLocationClient;
+    private Location previousLocation;
+
+    private ArrayList<Polyline> polylines = new ArrayList<>();
+    private ArrayList<LatLng> allLatLngs = new ArrayList<>();
+
+    //TODO: Contar calorias
+    //TODO: integrar no Firebase
+    //TODO: Draw polylines
+    //TODO: Marcar o início da rota e desenhar um marker no mapa com essas coordenadas
+    //TODO: Criar uma var
 
 
-
-    //TODO: Configurar os botões
-
-
+    @SuppressLint("MissingPermission")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -94,6 +116,67 @@ public class ExerciseFragment extends Fragment implements AdapterView.OnItemSele
                 mGoogleMap.setMyLocationEnabled(true);
             }
         });
+
+        //Route//
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this.getContext());
+
+        locationManager = (LocationManager) requireActivity().getSystemService(Context.LOCATION_SERVICE);
+        assert locationManager != null;
+
+        locationListener = new LocationListener() {
+
+            @Override
+            public void onLocationChanged(Location location) {
+
+                PolylineOptions lineOptions = new PolylineOptions()
+                        .add(new LatLng(previousLocation.getLatitude(), previousLocation.getLongitude()))
+                        .add(new LatLng(location.getLatitude(), location.getLongitude()))
+                        .color(Color.GREEN)
+                        .width(5);
+                // add the polyline to the map
+                Polyline polyline = mGoogleMap.addPolyline(lineOptions);
+                // set the zindex so that the poly line stays on top of my tile overlays
+                polyline.setZIndex(1000);
+                // add the poly line to the array so they can all be removed if necessary
+                polylines.add(polyline);
+                // add the latlng from this point to the array
+                allLatLngs.add(new LatLng(location.getLatitude(), location.getLongitude()));
+                previousLocation = location;
+
+                // check if the positions added is a multiple of 100, if so, redraw all of the polylines as one line (this helps with rendering the map when there are thousands of points)
+                if(allLatLngs.size() % 100 == 0) {
+                    // first remove all of the existing polylines
+                    for(Polyline pline : polylines) {
+                        pline.remove();
+                    }
+                    // create one new large polyline
+                    Polyline routeSoFar = mGoogleMap.addPolyline(new PolylineOptions().color(Color.GREEN).width(5));
+                    // draw the polyline for the route so far
+                    routeSoFar.setPoints(allLatLngs);
+                    // set the zindex so that the poly line stays on top of my tile overlays
+                    routeSoFar.setZIndex(1000);
+                    // clear the polylines array
+                    polylines.clear();
+                    // add the new poly line as the first element in the polylines array
+                    polylines.add(routeSoFar);
+                }
+            }
+
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+
+            }
+
+            @Override
+            public void onProviderEnabled(String provider) {
+
+            }
+
+            @Override
+            public void onProviderDisabled(String provider) {
+
+            }
+        };
 
         //Spinner//
         spinnerExercises = v.findViewById(R.id.spinnerExercises);
@@ -121,6 +204,20 @@ public class ExerciseFragment extends Fragment implements AdapterView.OnItemSele
                 chronometer.setBase(SystemClock.elapsedRealtime());
                 chronometer.setFormat("%s");
                 chronometer.start();
+                locationManager.requestLocationUpdates("gps",5000,0,locationListener);
+                fusedLocationClient.getLastLocation()
+                        .addOnSuccessListener(requireActivity(), new OnSuccessListener<Location>() {
+                            @Override
+                            public void onSuccess(Location location) {
+                                // Got last known location. In some rare situations this can be null.
+                                mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(location.getLatitude(),location.getLongitude())).title("Início"));
+                                previousLocation = location;
+                                if (location != null) {
+                                    // Logic to handle location object
+                                }
+                            }
+                        });
+
             }
         });
 
@@ -166,10 +263,10 @@ public class ExerciseFragment extends Fragment implements AdapterView.OnItemSele
         });
 
         //StepCounter//
-
+        SensorManager sensorManager = (SensorManager) requireActivity().getSystemService(Activity.SENSOR_SERVICE);
+        Sensor stepSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
         steps = v.findViewById(R.id.stepsText);
         kms = v.findViewById(R.id.distanceText);
-        assert sensorManager != null;
 
         if (stepSensor != null) {
             sensorManager.registerListener(this,stepSensor, SensorManager.SENSOR_DELAY_UI);
