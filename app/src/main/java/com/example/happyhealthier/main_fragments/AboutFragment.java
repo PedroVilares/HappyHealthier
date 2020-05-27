@@ -1,4 +1,4 @@
-package com.example.happyhealthier.fragments;
+package com.example.happyhealthier.main_fragments;
 
 import android.os.Bundle;
 

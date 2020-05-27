@@ -1,11 +1,10 @@
-package com.example.happyhealthier.fragments;
+package com.example.happyhealthier.main_fragments;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.drawable.Icon;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -20,7 +19,6 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.os.SystemClock;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,16 +39,13 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.util.ArrayList;
-import java.util.Objects;
-
-import static androidx.core.content.ContextCompat.getSystemService;
-import static androidx.core.content.ContextCompat.getSystemServiceName;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -70,25 +65,26 @@ public class ExerciseFragment extends Fragment implements AdapterView.OnItemSele
     private Chronometer chronometer;
     private boolean isExercising = false;
     private String exerciseChosen;
-    private long exerciseTime;
-    private TextView steps,kms;
+    private TextView steps,kms,exercisePicked;
+
+    //EXERCISE VARIABLES//
+    private String exerciseTime;
+    private long exerciseTimeLong;
     private int stepsTaken = 0;
+    private double kmsDone;
     private int stepsInitial = 0;
+    private TextView distanceFinal, timeFinal, stepsFinal, caloriesFinal, exerciseFinal;
 
     //Location//
     private LocationManager locationManager;
     private LocationListener locationListener;
-    FusedLocationProviderClient fusedLocationClient;
+    private FusedLocationProviderClient fusedLocationClient;
     private Location previousLocation;
 
     private ArrayList<Polyline> polylines = new ArrayList<>();
     private ArrayList<LatLng> allLatLngs = new ArrayList<>();
 
-    //TODO: Contar calorias
     //TODO: integrar no Firebase
-    //TODO: Draw polylines
-    //TODO: Marcar o início da rota e desenhar um marker no mapa com essas coordenadas
-    //TODO: Criar uma var
 
 
     @SuppressLint("MissingPermission")
@@ -119,20 +115,17 @@ public class ExerciseFragment extends Fragment implements AdapterView.OnItemSele
 
         //Route//
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this.getContext());
-
         locationManager = (LocationManager) requireActivity().getSystemService(Context.LOCATION_SERVICE);
         assert locationManager != null;
-
         locationListener = new LocationListener() {
-
             @Override
             public void onLocationChanged(Location location) {
 
                 PolylineOptions lineOptions = new PolylineOptions()
                         .add(new LatLng(previousLocation.getLatitude(), previousLocation.getLongitude()))
                         .add(new LatLng(location.getLatitude(), location.getLongitude()))
-                        .color(Color.GREEN)
-                        .width(5);
+                        .color(Color.BLUE)
+                        .width(9);
                 // add the polyline to the map
                 Polyline polyline = mGoogleMap.addPolyline(lineOptions);
                 // set the zindex so that the poly line stays on top of my tile overlays
@@ -150,7 +143,7 @@ public class ExerciseFragment extends Fragment implements AdapterView.OnItemSele
                         pline.remove();
                     }
                     // create one new large polyline
-                    Polyline routeSoFar = mGoogleMap.addPolyline(new PolylineOptions().color(Color.GREEN).width(5));
+                    Polyline routeSoFar = mGoogleMap.addPolyline(new PolylineOptions().color(Color.BLUE).width(9));
                     // draw the polyline for the route so far
                     routeSoFar.setPoints(allLatLngs);
                     // set the zindex so that the poly line stays on top of my tile overlays
@@ -180,7 +173,7 @@ public class ExerciseFragment extends Fragment implements AdapterView.OnItemSele
 
         //Spinner//
         spinnerExercises = v.findViewById(R.id.spinnerExercises);
-        String[] exercises = getResources().getStringArray(R.array.exercises);
+        final String[] exercises = getResources().getStringArray(R.array.exercises);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(requireActivity().getApplicationContext(),R.layout.spinner_item,exercises);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerExercises.setAdapter(adapter);
@@ -193,6 +186,7 @@ public class ExerciseFragment extends Fragment implements AdapterView.OnItemSele
         card2 = v.findViewById(R.id.cardView2);
         card2.setVisibility(View.INVISIBLE);
         chronometer = v.findViewById(R.id.time);
+        exercisePicked = v.findViewById(R.id.exerciseChosenText);
 
         playButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -201,16 +195,21 @@ public class ExerciseFragment extends Fragment implements AdapterView.OnItemSele
                 isExercising = true;
                 card1.setVisibility(View.INVISIBLE);
                 card2.setVisibility(View.VISIBLE);
+                card3.setVisibility(View.INVISIBLE);
+                exercisePicked.setText(exerciseChosen);
                 chronometer.setBase(SystemClock.elapsedRealtime());
                 chronometer.setFormat("%s");
                 chronometer.start();
+                polylines = new ArrayList<>();
+                allLatLngs = new ArrayList<>();
                 locationManager.requestLocationUpdates("gps",5000,0,locationListener);
                 fusedLocationClient.getLastLocation()
                         .addOnSuccessListener(requireActivity(), new OnSuccessListener<Location>() {
                             @Override
                             public void onSuccess(Location location) {
                                 // Got last known location. In some rare situations this can be null.
-                                mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(location.getLatitude(),location.getLongitude())).title("Início"));
+                                Marker iniMarker = mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(location.getLatitude(),location.getLongitude())).title("Início"));
+                                iniMarker.showInfoWindow();
                                 previousLocation = location;
                                 if (location != null) {
                                     // Logic to handle location object
@@ -250,17 +249,47 @@ public class ExerciseFragment extends Fragment implements AdapterView.OnItemSele
             @Override
             public void onClick(View v) {
                 isExercising = false;
-                exerciseTime = chronometer.getBase();
+                exerciseTimeLong = SystemClock.elapsedRealtime() - chronometer.getBase();
+                exerciseTime = chronometer.getText().toString();
                 chronometer.stop();
                 chronometer.setBase(SystemClock.elapsedRealtime());
                 card1.setVisibility(View.VISIBLE);
                 card2.setVisibility(View.INVISIBLE);
-
+                card3.setVisibility(View.VISIBLE);
+                distanceFinal.setText(String.format("%s km",String.valueOf(kmsDone)));
+                String pronoun;
+                if(exerciseChosen.equals("Ciclismo")){
+                    pronoun = "do ";
+                } else {
+                    pronoun = "da ";
+                }
+                String atividade = "Resumo " + pronoun + exerciseChosen;
+                exerciseFinal.setText(atividade);
+                timeFinal.setText(String.valueOf(exerciseTime));
+                stepsFinal.setText(String.valueOf(stepsTaken));
+                caloriesFinal.setText(String.valueOf(calorieCalculator(exerciseChosen,exerciseTimeLong)));
+                locationManager.removeUpdates(locationListener);
+                fusedLocationClient.getLastLocation().addOnSuccessListener(requireActivity(), new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location location) {
+                        Marker finiMarker = mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(location.getLatitude(),location.getLongitude())).title("Fim"));
+                        finiMarker.showInfoWindow();
+                    }
+                });
                 //exerciseChosen
                 //distance
                 //steps
             }
         });
+
+        //ReportExercise//
+        card3 = v.findViewById(R.id.cardview3);
+        distanceFinal = v.findViewById(R.id.distanciaReportText);
+        stepsFinal = v.findViewById(R.id.passosReportText);
+        timeFinal = v.findViewById(R.id.tempoReportText);
+        exerciseFinal = v.findViewById(R.id.exercicioReportText);
+        caloriesFinal = v.findViewById(R.id.caloriasReportText);
+
 
         //StepCounter//
         SensorManager sensorManager = (SensorManager) requireActivity().getSystemService(Activity.SENSOR_SERVICE);
@@ -317,7 +346,6 @@ public class ExerciseFragment extends Fragment implements AdapterView.OnItemSele
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         if (parent.getId() == R.id.spinnerExercises) {
             exerciseChosen = parent.getItemAtPosition(position).toString();
-            //Toast.makeText(getActivity().getApplicationContext(),exerciseChosen,Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -337,7 +365,8 @@ public class ExerciseFragment extends Fragment implements AdapterView.OnItemSele
 
             stepsTaken=(int) event.values[0]-stepsInitial;
             steps.setText(String.valueOf(stepsTaken));
-            kms.setText(String.format("%.2f km", stepsTaken / 1312.34));
+            kmsDone = stepsTaken / 1312.34;
+            kms.setText(String.format("%.2f km", kmsDone));
 
         }
     }
@@ -345,5 +374,31 @@ public class ExerciseFragment extends Fragment implements AdapterView.OnItemSele
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
+    }
+
+    public double calorieCalculator(String exerciseType,long exerciseTimeLong){
+        int runningMET = 7;
+        int walkingMET = 4;
+        int cyclingMET = 6;
+
+        double peso = 0;
+        double caloriesPerMin = 0;
+        double exerciseTime = (double) exerciseTimeLong;
+
+        switch (exerciseType) {
+            case "Corrida":
+                caloriesPerMin = (runningMET*peso *3.5)/200;
+                break;
+
+            case "Caminhada":
+                caloriesPerMin = (walkingMET*peso*3.5)/200;
+                break;
+
+            case "Ciclismo":
+                caloriesPerMin = (cyclingMET*peso*3.5)/200;
+        }
+
+
+        return caloriesPerMin*((exerciseTime/1000)/60);
     }
 }

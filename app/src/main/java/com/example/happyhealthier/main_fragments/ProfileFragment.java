@@ -1,34 +1,26 @@
-package com.example.happyhealthier.fragments;
+package com.example.happyhealthier.main_fragments;
 
-import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
-import android.provider.MediaStore;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.MediaController;
 import android.widget.TextView;
 
 import com.example.happyhealthier.R;
 import com.example.happyhealthier.helper_fragments.ImagePickerFragment;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
-
-import java.io.File;
-import java.io.IOException;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -73,7 +65,7 @@ public class ProfileFragment extends Fragment {
 
 
         //BotãoCâmara//
-        Button imageButton = v.findViewById(R.id.profilePicButton);
+        ImageButton imageButton = v.findViewById(R.id.profilePicButton);
         imageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -82,6 +74,21 @@ public class ProfileFragment extends Fragment {
             }
         });
 
+        //IMC
+        TextView imcValueText, imcDescriptionText,imcUnitsText;
+
+        double IMC = 0;
+        //TODO: Se o utilizador tiver valores de peso e altura, calcular o imc pela função, se não, é zero;
+        String IMCDescription;
+
         return v;
+
+    }
+
+    private double imcCalculator(){
+        double peso = 0;
+        double altura = 0;
+
+        return (peso/(altura*altura));
     }
 }
