@@ -4,6 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/gradient_list"
+    android:id="@+id/layout_profile"
     tools:context=".main_fragments.ProfileFragment">
 
     <ImageView
@@ -138,6 +140,7 @@
         android:layout_height="150dp"
         android:layout_marginBottom="25dp"
         android:elevation="5dp"
+        app:cardCornerRadius="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
@@ -150,24 +153,27 @@
                 android:id="@+id/imcValueText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
                 android:layout_marginTop="25dp"
+                android:elevation="5dp"
                 android:text="TextView"
                 android:textAlignment="center"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-                android:textSize="24sp"
+                android:textSize="30sp"
                 app:layout_constraintEnd_toStartOf="@+id/divider"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <View
                 android:id="@+id/divider"
-                android:layout_width="1dp"
+                android:layout_width="4dp"
                 android:layout_height="148dp"
-                android:background="?android:attr/listDivider"
+                android:layout_marginStart="120dp"
+                android:layout_marginTop="45dp"
+                android:layout_marginBottom="45dp"
+                android:background="#FFFFFF"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:layout_editor_absoluteX="125dp" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/imcDescriptionText"
@@ -186,10 +192,11 @@
                 android:id="@+id/imcUnits"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="28dp"
+                android:layout_marginTop="15dp"
                 android:text="TextView"
                 android:textAlignment="center"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                android:textSize="18sp"
                 app:layout_constraintEnd_toStartOf="@+id/divider"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/imcValueText" />

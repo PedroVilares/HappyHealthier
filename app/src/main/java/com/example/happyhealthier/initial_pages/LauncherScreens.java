@@ -72,13 +72,13 @@ public class LauncherScreens extends AppCompatActivity {
     public void setupOnboardingItems(){
         List<OnboardingItem> onboardingItems = new ArrayList<>();
         OnboardingItem itemExercicio = new OnboardingItem();
-        itemExercicio.setTitle("Exercício");
-        itemExercicio.setDescription("Descrição Exercício");
+        itemExercicio.setTitle("Faça Exercício!");
+        itemExercicio.setDescription("A HappyHealthier permite-lhe registar as suas caminhadas, corridas e voltas de bicicleta!");
         itemExercicio.setImage(R.drawable.exercise_logo);
 
         OnboardingItem itemMedidas = new OnboardingItem();
         itemMedidas.setTitle("Medidas");
-        itemMedidas.setDescription("Descrição Medidas");
+        itemMedidas.setDescription("Mantenha a sua saúde em dia com a HappyHealthier!");
         itemMedidas.setImage(R.drawable.measurements_logo);
 
         onboardingItems.add(itemExercicio);

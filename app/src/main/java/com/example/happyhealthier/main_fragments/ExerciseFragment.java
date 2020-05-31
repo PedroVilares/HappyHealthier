@@ -401,4 +401,6 @@ public class ExerciseFragment extends Fragment implements AdapterView.OnItemSele
 
         return caloriesPerMin*((exerciseTime/1000)/60);
     }
+
+
 }

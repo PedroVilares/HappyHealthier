@@ -23,6 +23,7 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
+import com.example.happyhealthier.initial_pages.LauncherScreens;
 import com.example.happyhealthier.main_fragments.AboutFragment;
 import com.example.happyhealthier.main_fragments.ExerciseFragment;
 import com.example.happyhealthier.main_fragments.MeasurementsFragment;
@@ -30,17 +31,27 @@ import com.example.happyhealthier.main_fragments.ProfileFragment;
 import com.example.happyhealthier.main_fragments.SettingsFragment;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.AppSettingsDialog;
@@ -49,14 +60,13 @@ import pub.devrel.easypermissions.EasyPermissions;
 public class MainActivity extends AppCompatActivity implements EasyPermissions.PermissionCallbacks{
 
     private static final int REQUEST_CODE = 1;
+    private ListenerRegistration userdataListener;
     List<AuthUI.IdpConfig> providers;
     Button mSignOutButton;
     DrawerLayout drawer;
     LinearLayout layout;
-
-    //Permissions
-    private int STORAGE_PERMISSION_CODE = 1;
-
+    TextView navUsername;
+    Map<String,Object> user_data = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,14 +84,13 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
         //Setting text and picture on NavDrawer to user's name//
         NavigationView navigationView = findViewById(R.id.nav_view);
         View headerView = navigationView.getHeaderView(0);
-        TextView navUsername = headerView.findViewById(R.id.nav_nameText);
+        navUsername = headerView.findViewById(R.id.nav_nameText);
         final ImageView navPicture = headerView.findViewById(R.id.nav_profilepic);
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 //        String text = navUsername.getText().toString();
 //        Log.e("name",text);
         if(user != null) {
             navUsername.setText(user.getDisplayName());
-
             String userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
             StorageReference storageReference = FirebaseStorage.getInstance().getReference();
             StorageReference pictureRef = storageReference.child("Profile Pictures").child(userID);
@@ -159,6 +168,14 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
 //        });
     }
 
+
+
+
+    //TODO: Os display names alterar para o nome do documento do Firebase
+
+
+
+
     private void showSignInOptions() {
         startActivityForResult(
                 AuthUI.getInstance().createSignInIntentBuilder().
@@ -178,12 +195,46 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
 
             if (resultCode == RESULT_OK){
 
+                //TODO: Fazer response.isNewUser => mostrar escrâs iniciais
+                if(response.isNewUser()){
+                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                    user_data.put("Nome",user.getDisplayName());
+                    user_data.put("Idade",1);
+                    user_data.put("Altura",1);
+                    user_data.put("Peso",1);
+                    FirebaseFirestore db = FirebaseFirestore.getInstance();
+                    db.collection(user.getUid()).document("user_data").set(user_data).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Toast.makeText(getApplicationContext(),"Gravou",Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(getApplicationContext(), LauncherScreens.class);
+                            startActivity(intent);
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(getApplicationContext(),"Falha no Registo",Toast.LENGTH_SHORT).show();
+                            showSignInOptions();
+                        }
+                    });
+                }
+
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                 String username = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
-                assert user != null;
-                Snackbar snackbar = Snackbar.make(layout,"Bem vindo, "+username,Snackbar.LENGTH_SHORT);
-                snackbar.setActionTextColor(Color.WHITE);
-                snackbar.show();
+                if (username != null){
+                    Snackbar snackbar = Snackbar.make(layout,"Bem vindo, "+username,Snackbar.LENGTH_SHORT);
+                    snackbar.setActionTextColor(Color.WHITE);
+                    snackbar.show();
+
+                } else{
+                    Snackbar snackbar = Snackbar.make(layout,"Bem vindo",Snackbar.LENGTH_SHORT);
+                    snackbar.setActionTextColor(Color.WHITE);
+                    snackbar.show();
+
+                }
+
+
+
             }
             else {
                 assert response != null;
@@ -235,5 +286,33 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
         if (EasyPermissions.somePermissionPermanentlyDenied(this,perms)){
             new AppSettingsDialog.Builder(this).build().show();
         }
+    }
+
+    private FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private DocumentReference userdataDocument = db.collection(Objects.requireNonNull(user).getUid()).document("user_data");
+    @Override
+    protected void onStart() {
+        super.onStart();
+        userdataListener = userdataDocument.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+                if (e != null) {
+                    Toast.makeText(getApplicationContext(), "Erro ao carregar dados\n" + e, Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                assert documentSnapshot != null;
+                if (documentSnapshot.exists()) {
+                    String username = documentSnapshot.getString("Nome");
+                    navUsername.setText(username);
+                }
+            }
+        });
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        userdataListener.remove();
     }
 }
