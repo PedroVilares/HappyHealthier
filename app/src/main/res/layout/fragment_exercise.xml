@@ -26,7 +26,8 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:background="@drawable/gradient_list">
 
             <TextView
                 android:id="@+id/textView2"
@@ -149,7 +150,7 @@
         android:id="@+id/cardView1"
         android:layout_width="match_parent"
         android:layout_height="130dp"
-        android:background="#FFFFFF"
+        android:background="@drawable/gradient_list"
         android:elevation="7dp"
         android:visibility="visible"
         map:layout_constraintBottom_toBottomOf="parent"
@@ -157,7 +158,8 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:background="@drawable/gradient_list">
 
             <ImageButton
                 android:id="@+id/musicButton"
@@ -208,7 +210,8 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:background="@drawable/gradient_list">
 
             <TextView
                 android:id="@+id/exercicioReportText"

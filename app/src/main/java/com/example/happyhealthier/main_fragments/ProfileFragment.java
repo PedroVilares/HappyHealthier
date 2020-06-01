@@ -151,7 +151,7 @@ public class ProfileFragment extends Fragment implements EasyPermissions.Permiss
     @Override
     public void onPermissionsGranted(int requestCode, @NonNull List<String> perms) {
         ImagePickerFragment imagePickerFragment = new ImagePickerFragment();
-        imagePickerFragment.show(getChildFragmentManager(), "image_picker");
+        imagePickerFragment.show(imagePickerFragment.getParentFragmentManager(), "image_picker");
     }
 
     @Override

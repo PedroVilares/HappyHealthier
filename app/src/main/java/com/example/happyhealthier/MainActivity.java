@@ -6,9 +6,15 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.Manifest;
+import android.app.AlarmManager;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -48,6 +54,7 @@ import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -67,6 +74,9 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
     LinearLayout layout;
     TextView navUsername;
     Map<String,Object> user_data = new HashMap<>();
+    private FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private DocumentReference userdataDocument;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,6 +100,7 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
 //        String text = navUsername.getText().toString();
 //        Log.e("name",text);
         if(user != null) {
+            userdataDocument = db.collection(user.getUid()).document("user_data");
             navUsername.setText(user.getDisplayName());
             String userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
             StorageReference storageReference = FirebaseStorage.getInstance().getReference();
@@ -146,6 +157,23 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
             }
         });
 
+        //Notifications//
+        Intent intent = new Intent(getApplicationContext(),MyReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(),0,intent,0);
+
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        Calendar sonoStartTime = Calendar.getInstance();
+        Calendar now = Calendar.getInstance();
+        sonoStartTime.set(Calendar.HOUR_OF_DAY,9);
+        sonoStartTime.set(Calendar.MINUTE, 0);
+        sonoStartTime.set(Calendar.SECOND,0);
+        if (now.after(sonoStartTime)) {
+            sonoStartTime.add(Calendar.DATE,1);
+        }
+        Log.e("alarm", String.valueOf(sonoStartTime));
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,sonoStartTime.getTimeInMillis(),AlarmManager.INTERVAL_DAY,pendingIntent);
+
+
 //        mSignOutButton = findViewById(R.id.signOutButton);
 //        mSignOutButton.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -167,14 +195,6 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
 //            }
 //        });
     }
-
-
-
-
-    //TODO: Os display names alterar para o nome do documento do Firebase
-
-
-
 
     private void showSignInOptions() {
         startActivityForResult(
@@ -288,31 +308,33 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
         }
     }
 
-    private FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-    private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private DocumentReference userdataDocument = db.collection(Objects.requireNonNull(user).getUid()).document("user_data");
+
     @Override
     protected void onStart() {
         super.onStart();
-        userdataListener = userdataDocument.addSnapshotListener(new EventListener<DocumentSnapshot>() {
-            @Override
-            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
-                if (e != null) {
-                    Toast.makeText(getApplicationContext(), "Erro ao carregar dados\n" + e, Toast.LENGTH_SHORT).show();
-                    return;
+        if (userdataDocument != null){
+            userdataListener = userdataDocument.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                @Override
+                public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+                    if (e != null) {
+                        Toast.makeText(getApplicationContext(), "Erro ao carregar dados\n" + e, Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    assert documentSnapshot != null;
+                    if (documentSnapshot.exists()) {
+                        String username = documentSnapshot.getString("Nome");
+                        navUsername.setText(username);
+                    }
                 }
-                assert documentSnapshot != null;
-                if (documentSnapshot.exists()) {
-                    String username = documentSnapshot.getString("Nome");
-                    navUsername.setText(username);
-                }
-            }
-        });
+            });
+        }
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        userdataListener.remove();
+        if(userdataDocument != null){
+            userdataListener.remove();
+        }
     }
 }

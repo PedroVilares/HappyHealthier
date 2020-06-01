@@ -30,4 +30,17 @@
         <item>Ciclismo</item>
     </string-array>
 
+    <string-array name="medicoes">
+        <item>Sono</item>
+        <item>Peso</item>
+        <item>IMC</item>
+        <item>Passos</item>
+        <item>Distância</item>
+        <item>Calorias</item>
+        <item>Batimento Cardíaco</item>
+        <item>Pressão Arterial</item>
+        <item>Glicemia</item>
+        <item>Altura</item>
+    </string-array>
+
 </resources>

@@ -31,6 +31,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.happyhealthier.ExerciseService;
+import com.example.happyhealthier.PointValue;
 import com.example.happyhealthier.R;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -44,8 +46,14 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Objects;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -216,6 +224,7 @@ public class ExerciseFragment extends Fragment implements AdapterView.OnItemSele
                                 }
                             }
                         });
+                //startService(kmsDone);
 
             }
         });
@@ -276,9 +285,31 @@ public class ExerciseFragment extends Fragment implements AdapterView.OnItemSele
                         finiMarker.showInfoWindow();
                     }
                 });
-                //exerciseChosen
-                //distance
-                //steps
+
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                DatabaseReference referencePassos = database.getReference(user.getUid()).child("Passos");
+                DatabaseReference referenceKms = database.getReference(user.getUid()).child("Distância");
+                DatabaseReference referenceCals = database.getReference(user.getUid()).child("Calorias");
+
+                String idPassos = referencePassos.push().getKey();
+                String idKms = referenceKms.push().getKey();
+                String idCals = referenceCals.push().getKey();
+
+                long x = new Date().getTime();
+                PointValue pointValuePassos = new PointValue(x,stepsTaken);
+                PointValue pointValueKms = new PointValue(x,kmsDone);
+                PointValue pointValueCals = new PointValue(x,calorieCalculator(exerciseChosen,exerciseTimeLong));
+
+                referencePassos.child(idPassos).setValue(pointValuePassos);
+                referenceKms.child(idKms).setValue(pointValueKms);
+                referenceCals.child(idCals).setValue(pointValueCals).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.e("realtime","Com Sucesso");
+                    }
+                });
+                //stopService(v);
             }
         });
 
@@ -367,6 +398,7 @@ public class ExerciseFragment extends Fragment implements AdapterView.OnItemSele
             steps.setText(String.valueOf(stepsTaken));
             kmsDone = stepsTaken / 1312.34;
             kms.setText(String.format("%.2f km", kmsDone));
+            startService(kmsDone);
 
         }
     }
@@ -402,5 +434,16 @@ public class ExerciseFragment extends Fragment implements AdapterView.OnItemSele
         return caloriesPerMin*((exerciseTime/1000)/60);
     }
 
+    private void startService(double kms){
 
+        Intent serviceIntent = new Intent(getContext(), ExerciseService.class);
+        serviceIntent.putExtra("distance",String.valueOf(kms));
+
+        requireActivity().startService(serviceIntent);
+    }
+
+    public void stopService(View v){
+        Intent serviceIntent = new Intent(getContext(),ExerciseService.class);
+        getActivity().stopService(serviceIntent);
+    }
 }
