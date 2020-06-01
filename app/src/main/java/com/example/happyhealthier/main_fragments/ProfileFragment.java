@@ -89,7 +89,7 @@ public class ProfileFragment extends Fragment implements EasyPermissions.Permiss
             });
         }
 
-        //UserData//
+        //UserDataText//
         userNameText = v.findViewById(R.id.usenameText);
         userAgeText = v.findViewById(R.id.userAgeText);
         userHeightText = v.findViewById(R.id.userHeightText);
@@ -125,7 +125,6 @@ public class ProfileFragment extends Fragment implements EasyPermissions.Permiss
     }
 
     private double imcCalculator(Double weight,Double height) {
-
         return (weight / (height * height));
     }
 
@@ -183,10 +182,26 @@ public class ProfileFragment extends Fragment implements EasyPermissions.Permiss
                     Double userWeight = documentSnapshot.getDouble("Peso");
                     Double userHeight = documentSnapshot.getDouble("Altura");
 
-                    userNameText.setText(username);
-                    userAgeText.setText(String.format("%s anos", String.valueOf(userAge.intValue())));
-                    userHeightText.setText(String.format("%s m", String.valueOf( userHeight)));
-                    userWeightText.setText(String.format("%s kg", String.valueOf(userWeight)));
+                    if (username == null){
+                        userNameText.setText(R.string.por_definir);
+                    } else {
+                        userNameText.setText(username);
+                    }
+                    if (userAge == 1){
+                        userAgeText.setText(R.string.por_definir);
+                    } else {
+                        userAgeText.setText(String.format("%s anos", String.valueOf(userAge.intValue())));
+                    }
+                    if (userWeight == 1){
+                        userWeightText.setText(R.string.por_definir);
+                    } else {
+                        userWeightText.setText(String.format("%s kg", String.valueOf(userWeight)));
+                    }
+                    if (userHeight == 1) {
+                        userHeightText.setText(R.string.por_definir);
+                    } else {
+                        userHeightText.setText(String.format("%s m", String.valueOf( userHeight)));
+                    }
 
                     //IMC//
                     imcUnitsText.setText("kg/m^2");

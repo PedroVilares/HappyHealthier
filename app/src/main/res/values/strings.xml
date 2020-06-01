@@ -23,6 +23,7 @@
     <string name="definir_foto_de_perfil">Definir foto de perfil</string>
     <string name="c_mara">Câmara</string>
     <string name="galeria">Galeria</string>
+    <string name="por_definir">Por definir</string>
 
     <string-array name="exercises">
         <item>Caminhada</item>
