@@ -21,12 +21,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.happyhealthier.PointValue;
 import com.example.happyhealthier.R;
 import com.example.happyhealthier.helper_fragments.ImagePickerFragment;
 import com.example.happyhealthier.helper_fragments.ProfileDataFragment;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -37,6 +40,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -221,6 +225,19 @@ public class ProfileFragment extends Fragment implements EasyPermissions.Permiss
                         imcValueText.setText("0.0");
                         imcDescriptionText.setText("Sem dados");
                     }
+
+                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                    FirebaseDatabase database = FirebaseDatabase.getInstance();
+                    DatabaseReference referenceIMC = database.getReference(user.getUid()).child("IMC");
+                    String idIMC = referenceIMC.push().getKey();
+                    long x = new Date().getTime();
+                    PointValue pointValueIMC = new PointValue(x, IMC);
+                    referenceIMC.child(idIMC).setValue(pointValueIMC).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Log.e("realtime", "Com Sucesso");
+                        }
+                    });
                 }
             }
         });

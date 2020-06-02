@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,16 +15,20 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.happyhealthier.PointValue;
 import com.example.happyhealthier.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -37,7 +42,7 @@ public class ProfileDataFragment extends DialogFragment {
     private FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     private DocumentReference userdataDocumentReference = db.collection(Objects.requireNonNull(user).getUid()).document("user_data");
 
-    private EditText usernameEdit,userageEdit,userheightEdit,userweightEdit;
+    private EditText usernameEdit, userageEdit, userheightEdit, userweightEdit;
     private Button mEditButton;
 
     public ProfileDataFragment() {
@@ -52,7 +57,7 @@ public class ProfileDataFragment extends DialogFragment {
         View v = inflater.inflate(R.layout.fragment_profile_data, container, false);
         usernameEdit = v.findViewById(R.id.nomeInputText);
         userageEdit = v.findViewById(R.id.idadeInputText);
-        userheightEdit= v.findViewById(R.id.alturaInputText);
+        userheightEdit = v.findViewById(R.id.alturaInputText);
         userweightEdit = v.findViewById(R.id.pesoInputText);
 
         userdataDocumentReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -72,7 +77,7 @@ public class ProfileDataFragment extends DialogFragment {
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(getContext(),"Sem Internet",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Sem Internet", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -82,7 +87,7 @@ public class ProfileDataFragment extends DialogFragment {
             @Override
             public void onClick(View v) {
 
-                Map<String,Object> new_user_data = new HashMap<>();
+                Map<String, Object> new_user_data = new HashMap<>();
 
                 String newUsername = usernameEdit.getText().toString();
                 String newUserAge = userageEdit.getText().toString();
@@ -90,21 +95,41 @@ public class ProfileDataFragment extends DialogFragment {
                 String newUserWeight = userweightEdit.getText().toString();
 
 
-                new_user_data.put("Nome",newUsername);
+                new_user_data.put("Nome", newUsername);
                 new_user_data.put("Idade", Double.parseDouble(newUserAge));
-                new_user_data.put("Altura",Double.parseDouble(newUserHeight));
-                new_user_data.put("Peso",Double.parseDouble(newUserWeight));
+                new_user_data.put("Altura", Double.parseDouble(newUserHeight));
+                new_user_data.put("Peso", Double.parseDouble(newUserWeight));
 
                 db.collection(user.getUid()).document("user_data").set(new_user_data).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(getContext(),"Sem Internet",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), "Sem Internet", Toast.LENGTH_SHORT).show();
                     }
                 }).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        Toast.makeText(getContext(),"Dados atualizados",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), "Dados atualizados", Toast.LENGTH_SHORT).show();
                         dismiss();
+                    }
+                });
+
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                DatabaseReference referenceAltura = database.getReference(user.getUid()).child("Altura");
+                DatabaseReference referencePeso = database.getReference(user.getUid()).child("Peso");
+
+                String idAltura = referenceAltura.push().getKey();
+                String idPeso = referencePeso.push().getKey();
+
+                long x = new Date().getTime();
+                PointValue pointValueAltura = new PointValue(x, Double.parseDouble(newUserHeight));
+                PointValue pointValuePeso = new PointValue(x, Double.parseDouble(newUserWeight));
+
+                referenceAltura.child(idAltura).setValue(pointValueAltura);
+                referencePeso.child(idPeso).setValue(pointValuePeso).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.e("realtime", "Com Sucesso");
                     }
                 });
             }
