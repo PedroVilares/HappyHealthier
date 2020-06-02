@@ -1,5 +1,6 @@
 package com.example.happyhealthier.main_fragments;
 
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Build;
@@ -7,6 +8,7 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.preference.PreferenceManager;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -56,5 +58,6 @@ public class SettingsFragment extends Fragment {
         Configuration configuration = res.getConfiguration();
         configuration.setLocale(new Locale(idioma));
         res.updateConfiguration(configuration,displayMetrics);
+
     }
 }

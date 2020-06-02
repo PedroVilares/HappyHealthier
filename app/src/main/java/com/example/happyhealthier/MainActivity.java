@@ -97,8 +97,6 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
         navUsername = headerView.findViewById(R.id.nav_nameText);
         final ImageView navPicture = headerView.findViewById(R.id.nav_profilepic);
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-//        String text = navUsername.getText().toString();
-//        Log.e("name",text);
         if(user != null) {
             userdataDocument = db.collection(user.getUid()).document("user_data");
             navUsername.setText(user.getDisplayName());
@@ -126,7 +124,7 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
         );
 
         if (savedInstanceState == null) {
-            showSignInOptions();
+            //showSignInOptions();
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new MeasurementsFragment()).commit();
             navigationView.setCheckedItem(R.id.nav_measures);
         }
