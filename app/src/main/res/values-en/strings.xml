@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">HappyHealthier</string>
+    <string name="medi_es">Measurements</string>
+    <string name="sa_de">Health</string>
+    <string name="exerc_cio">Exercise</string>
+    <string name="perfil">Profile</string>
+    <string name="defini_es">Settings</string>
+    <string name="sobre">About</string>
+    <string name="placeholder_text">Undefined</string>
+    <string name="mais">more</string>
+    <string name="definir_foto_de_perfil">Set profile picture</string>
+    <string name="c_mara">Camera</string>
+    <string name="galeria">Gallery</string>
+    <string name="por_definir">Undefined</string>
+    <string name="mudar_linguagem">Change language</string>
+    <string name="altura">Height</string>
+    <string name="validar">Validate</string>
+    <string name="altura_m">Height (m)</string>
+    <string name="batimento_card_aco">Heart Rate</string>
+    <string name="batimento_card_aco_batimentos_min">Heart Rate (bpm)</string>
+</resources>

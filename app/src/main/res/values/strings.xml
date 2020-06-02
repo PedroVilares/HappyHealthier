@@ -2,12 +2,12 @@
     <string name="app_name">HappyHealthier</string>
     <string name="facebook_application_id" translatable="false">2397311947225367</string>
     <string name="facebook_login_protocol_key" translatable="false">fb2397311947225367</string>
-    <string name="sign_out">Sign Out</string>
+    <string name="sign_out" translatable="false">Sign Out</string>
 
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="navigation_drawer_open" translatable="false">Open navigation drawer</string>
+    <string name="navigation_drawer_close" translatable="false">Close navigation drawer</string>
 
-    <string name="home_second">Home Second</string>
+    <string name="home_second" translatable="false">Home Second</string>
     <string name="medi_es">Medições</string>
     <string name="sa_de">Saúde</string>
     <string name="exerc_cio">Exercício</string>
@@ -17,8 +17,8 @@
     <string name="placeholder_text">Por definir</string>
     <string name="mais">Mais</string>
 
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="title_activity_maps">Map</string>
+    <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
+    <string name="title_activity_maps" translatable="false">Map</string>
     <string name="definir_foto_de_perfil">Definir foto de perfil</string>
     <string name="c_mara">Câmara</string>
     <string name="galeria">Galeria</string>
