@@ -29,7 +29,6 @@
     <string name="validar">Validar</string>
     <string name="altura_m">Altura (m)</string>
     <string name="batimento_card_aco">Batimento Cardíaco</string>
-    <string name="validar">Validar</string>
     <string name="batimento_card_aco_batimentos_min">Batimento Cardíaco (batimentos/min)</string>
 
     <string-array name="exercises">
