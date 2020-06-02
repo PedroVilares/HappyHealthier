@@ -2,6 +2,8 @@ package com.example.happyhealthier.main_fragments;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -15,6 +17,8 @@ import android.location.LocationManager;
 import android.os.Bundle;
 
 import androidx.cardview.widget.CardView;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
@@ -310,6 +314,8 @@ public class ExerciseFragment extends Fragment implements AdapterView.OnItemSele
                     }
                 });
                 //stopService(v);
+                sendNotificationExercise(v,calorieCalculator(exerciseChosen,exerciseTimeLong));
+
             }
         });
 
@@ -345,6 +351,18 @@ public class ExerciseFragment extends Fragment implements AdapterView.OnItemSele
             }
         });
         return v;
+    }
+
+    private void sendNotificationExercise(View v, double cals) {
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(getContext());
+
+        Notification notification = new NotificationCompat.Builder(getContext(),"notificacao_exercicio")
+                .setContentTitle("Está de Parabéns!")
+                .setContentText("Ufa! Bom esforço, queimou "+cals +" calorias!")
+                .setSmallIcon(R.drawable.ic_exercise)
+                .build();
+
+        notificationManager.notify(1,notification);
     }
 
     @Override
