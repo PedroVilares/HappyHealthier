@@ -105,7 +105,6 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
             String userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
             StorageReference storageReference = FirebaseStorage.getInstance().getReference();
             StorageReference pictureRef = storageReference.child("Profile Pictures").child(userID);
-            String username = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
 
             if (pictureRef != null) {
                 pictureRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
@@ -240,7 +239,7 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
                 }
 
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                String username = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
+                String username = user.getDisplayName();
                 if (username != null){
                     Snackbar snackbar = Snackbar.make(layout,"Bem vindo, "+username,Snackbar.LENGTH_SHORT);
                     snackbar.setActionTextColor(Color.WHITE);
@@ -250,10 +249,7 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
                     Snackbar snackbar = Snackbar.make(layout,"Bem vindo",Snackbar.LENGTH_SHORT);
                     snackbar.setActionTextColor(Color.WHITE);
                     snackbar.show();
-
                 }
-
-
 
             }
             else {
