@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/gradient_list"
     tools:context=".main_fragments.SettingsFragment">
 
     <TextView
@@ -13,18 +14,27 @@
         android:layout_marginTop="26dp"
         android:text="@string/mudar_linguagem"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textSize="30sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Switch
         android:id="@+id/switch1"
-        android:layout_width="141dp"
-        android:layout_height="0dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginTop="46dp"
-        android:text="Switch"
+        android:checked="false"
+        android:text="Idioma       "
+        android:textOff="PT"
+        android:textOn="ENG"
+        android:textSize="20dp"
+        android:thumb="@drawable/switch_thumb"
+        android:track="@drawable/switch_track"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView19" />
+        app:layout_constraintTop_toBottomOf="@+id/textView19"
+        android:showText="true"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
