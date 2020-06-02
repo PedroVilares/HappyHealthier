@@ -4,72 +4,67 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#FFFFFF"
     tools:context=".MainActivity">
 
     <com.jjoe64.graphview.GraphView
         android:id="@+id/graph"
-        android:layout_width="381dp"
-        android:layout_height="393dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="55dp"
-        android:layout_marginEnd="14dp"
-        android:layout_marginBottom="61dp"
+        android:layout_width="379dp"
+        android:layout_height="304dp"
+        android:layout_marginStart="80dp"
+        android:layout_marginTop="53dp"
+        android:layout_marginEnd="43dp"
+        android:layout_marginBottom="54dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnInsert"
+        app:layout_constraintStart_toEndOf="@+id/pressaoMaxima"
+        app:layout_constraintTop_toTopOf="parent"
         tools:ignore="MissingConstraints" />
 
     <TextView
         android:id="@+id/title2"
         android:layout_width="104dp"
         android:layout_height="41dp"
-        android:layout_marginStart="48dp"
-        android:layout_marginTop="65dp"
-        android:layout_marginEnd="142dp"
-        android:text="Passos"
-        android:textAlignment="center"
+        android:layout_marginStart="60dp"
+        android:layout_marginTop="16dp"
+        android:text="Distância"
         android:textColor="#3F51B5"
         android:textSize="24sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/image"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/image" />
 
     <Button
         android:id="@+id/btnInsert"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="165dp"
-        android:layout_marginTop="19dp"
-        android:layout_marginEnd="158dp"
+        android:layout_marginStart="73dp"
+        android:layout_marginTop="18dp"
         android:text="Validar"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/pressaoMaxima"
         tools:ignore="MissingConstraints" />
 
     <EditText
         android:id="@+id/pressaoMaxima"
-        android:layout_width="173dp"
-        android:layout_height="49dp"
-        android:layout_marginStart="13dp"
-        android:layout_marginEnd="109dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
         android:ems="10"
-        android:hint="Passos"
+        android:hint="Distância (Km)"
         android:inputType="time"
         android:textAlignment="center"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/image"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/title2" />
 
     <ImageView
         android:id="@+id/image"
-        android:layout_width="117dp"
-        android:layout_height="87dp"
-        android:layout_marginTop="36dp"
+        android:layout_width="107dp"
+        android:layout_height="86dp"
+        android:layout_marginStart="60dp"
+        android:layout_marginTop="32dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/passos" />
+        app:srcCompat="@drawable/km" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

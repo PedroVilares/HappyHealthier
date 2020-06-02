@@ -26,8 +26,7 @@ import java.util.Date;
 
 public class imcActivity extends AppCompatActivity {
 
-    EditText yValue;
-    Button btn_insert;
+
 
     FirebaseDatabase database;
     DatabaseReference reference;
@@ -42,8 +41,7 @@ public class imcActivity extends AppCompatActivity {
         setContentView(R.layout.activity_imc);
         Intent intent1 = getIntent();
 
-        yValue = (EditText) findViewById(R.id.pressaoMaxima);
-        btn_insert = (Button) findViewById(R.id.btnInsert);
+
         graphView = (GraphView) findViewById(R.id.graph);
 
         series = new LineGraphSeries();
@@ -62,7 +60,7 @@ public class imcActivity extends AppCompatActivity {
         database = FirebaseDatabase.getInstance();
         reference = database.getReference(user.getUid()).child("IMC");
 
-        setListeners();
+
 
         graphView.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter(){
             @Override
@@ -76,20 +74,7 @@ public class imcActivity extends AppCompatActivity {
         });
     }
 
-    private void setListeners() {
-        btn_insert.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String id = reference.push().getKey();
-                long x = new Date().getTime();
-                float y = Integer.parseInt(yValue.getText().toString());
 
-                PointValue pointValue = new PointValue(x,y);
-                reference.child(id).setValue(pointValue);
-
-            }
-        });
-    }
 
     @Override
     protected void onStart(){

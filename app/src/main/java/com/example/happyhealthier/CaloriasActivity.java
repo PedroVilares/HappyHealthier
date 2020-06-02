@@ -83,7 +83,7 @@ public class CaloriasActivity extends AppCompatActivity {
             public void onClick(View view) {
                 String id = reference.push().getKey();
                 long x = new Date().getTime();
-                float y = Integer.parseInt(yValue.getText().toString());
+                double y =Double.parseDouble(yValue.getText().toString());
 
                 PointValue pointValue = new PointValue(x,y);
                 reference.child(id).setValue(pointValue);
