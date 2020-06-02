@@ -124,7 +124,7 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
         );
 
         if (savedInstanceState == null) {
-            //showSignInOptions();
+            showSignInOptions();
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new MeasurementsFragment()).commit();
             navigationView.setCheckedItem(R.id.nav_measures);
         }
@@ -206,13 +206,13 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
+        Log.e("novo","log in");
         if (requestCode == REQUEST_CODE){
             IdpResponse response = IdpResponse.fromResultIntent(data);
 
             if (resultCode == RESULT_OK){
 
-                //TODO: Fazer response.isNewUser => mostrar escrâs iniciais
+
                 if(response.isNewUser()){
                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                     user_data.put("Nome",user.getDisplayName());
