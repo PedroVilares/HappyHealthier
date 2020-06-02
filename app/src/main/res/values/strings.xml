@@ -29,6 +29,21 @@
     <string name="altura_m">Altura (m)</string>
     <string name="batimento_card_aco">Batimento Cardíaco</string>
     <string name="batimento_card_aco_batimentos_min">Batimento Cardíaco (batimentos/min)</string>
+    <string name="Calorias">Calorias</string>
+    <string name="Calorias_Kcal">Calorias (kcal)</string>
+    <string name="Distância">Distância</string>
+    <string name="Distância_Km">Distância (km)</string>
+    <string name="Glicemia">Glicemia</string>
+    <string name="Nível">Nível de Açucar (mg/dL)</string>
+    <string name="IMC">IMC</string>
+    <string name="passos">Passos</string>
+    <string name="peso">Peso</string>
+    <string name="peso_kg">Peso (Kg)</string>
+    <string name="press_o_arterial_m_nima_mm_hg">Pressão Arterial Mínima (mm Hg)</string>
+    <string name="press_o_arterial_m_xima_mm_hg">Pressão Arterial Máxima (mm Hg)</string>
+    <string name="press_o_arterial">Pressão Arterial</string>
+    <string name="sono">Sono</string>
+    <string name="hora_min">hora.min</string>
 
     <string-array name="exercises">
         <item>Caminhada</item>
