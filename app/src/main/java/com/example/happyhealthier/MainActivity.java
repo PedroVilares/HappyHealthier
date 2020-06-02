@@ -124,7 +124,7 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
         );
 
         if (savedInstanceState == null) {
-            //showSignInOptions();
+            showSignInOptions();
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new MeasurementsFragment()).commit();
             navigationView.setCheckedItem(R.id.nav_measures);
         }
