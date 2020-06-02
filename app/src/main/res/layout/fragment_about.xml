@@ -13,7 +13,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        android:text="Aplicação desenvolvida por Pedro Vilares e Inês Lopes para a UC de Computação Móvel.\n\nVersão 1.0"
+        android:text="@string/aplica_o_desenvolvida_por_pedro_vilares_e_in_s_lopes_para_a_uc_de_computa_o_m_vel_n_nvers_o_1_0"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

@@ -19,4 +19,53 @@
     <string name="altura_m">Height (m)</string>
     <string name="batimento_card_aco">Heart Rate</string>
     <string name="batimento_card_aco_batimentos_min">Heart Rate (bpm)</string>
+    <string name="Calorias">Calories</string>
+    <string name="Calorias_Kcal">Calories (kcal)</string>
+    <string name="Distância">Distance</string>
+    <string name="Distância_Km">Distance (km)</string>
+    <string name="Glicemia">" Blood glucose"</string>
+    <string name="Nível">" Blood glucose (mg/dL)"</string>
+    <string name="IMC">BMI</string>
+    <string name="passos">Steps</string>
+    <string name="peso">Weight</string>
+    <string name="peso_kg">Weight (kg)</string>
+    <string name="press_o_arterial_m_nima_mm_hg">Minimum Blood Pressure (mm Hg)</string>
+    <string name="press_o_arterial_m_xima_mm_hg">Maximum Blood Pressure (mm Hg)</string>
+    <string name="press_o_arterial">Blood Pressure</string>
+    <string name="sono">Sleep</string>
+    <string name="hora_min">hour.min</string>
+    <string name="tempo">Time</string>
+    <string name="resumo_da_atividade">Activity Report</string>
+    <string name="calorias">Calories:</string>
+    <string name="passos_dois_pontos">Steps:</string>
+    <string name="dist_ncia">Distance:</string>
+    <string name="tempo_dois_pontos">Time:</string>
+    <string name="nome_dois_pontos">Name:</string>
+    <string name="idade_dois_pontos">Age:</string>
+    <string name="peso_dois_pts">Weight:</string>
+    <string name="altura_dois_pts">Height:</string>
+    <string name="editar_dados_pessoais">Edit Personal data:</string>
+    <string name="idade">Age:</string>
+    <string name="concluir">Finish</string>
+    <string name="idioma">" Language           "</string>
+    <string name="aplica_o_desenvolvida_por_pedro_vilares_e_in_s_lopes_para_a_uc_de_computa_o_m_vel_n_nvers_o_1_0">Application developed by Pedro Vilares and Inês Lopes.</string>
+
+    <string-array name="exercises">
+        <item>Walk</item>
+        <item>Run</item>
+        <item>Cycling</item>
+    </string-array>
+
+    <string-array name="medicoes">
+        <item>Sleep</item>
+        <item>Weigth</item>
+        <item>BMI</item>
+        <item>Steps</item>
+        <item>Distance</item>
+        <item>Calories</item>
+        <item>Heart Rate</item>
+        <item>Blood Pressure</item>
+        <item>Blood Glucose</item>
+        <item>Height</item>
+    </string-array>
 </resources>

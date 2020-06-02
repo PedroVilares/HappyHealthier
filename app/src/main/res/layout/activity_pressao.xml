@@ -8,8 +8,8 @@
 
     <EditText
         android:id="@+id/pressaoMinima"
-        android:layout_width="281dp"
-        android:layout_height="46dp"
+        android:layout_width="302dp"
+        android:layout_height="45dp"
         android:layout_marginBottom="416dp"
         android:ems="10"
         android:hint="@string/press_o_arterial_m_nima_mm_hg"
@@ -49,8 +49,8 @@
 
     <EditText
         android:id="@+id/pressaoMaxima"
-        android:layout_width="282dp"
-        android:layout_height="48dp"
+        android:layout_width="308dp"
+        android:layout_height="47dp"
         android:layout_marginStart="38dp"
         android:layout_marginEnd="39dp"
         android:layout_marginBottom="476dp"

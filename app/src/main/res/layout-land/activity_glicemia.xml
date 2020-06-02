@@ -8,11 +8,12 @@
 
     <TextView
         android:id="@+id/title2"
-        android:layout_width="104dp"
+        android:layout_width="191dp"
         android:layout_height="41dp"
-        android:layout_marginStart="60dp"
+        android:layout_marginStart="25dp"
         android:layout_marginTop="28dp"
         android:text="@string/Glicemia"
+        android:textAlignment="center"
         android:textColor="#3F51B5"
         android:textSize="24sp"
         android:textStyle="bold"

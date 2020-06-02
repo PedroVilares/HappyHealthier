@@ -34,4 +34,38 @@
     <string name="press_o_arterial">Pressão Arterial</string>
     <string name="sono">Sono</string>
     <string name="hora_min">hora.min</string>
+    <string name="aplica_o_desenvolvida_por_pedro_vilares_e_in_s_lopes_para_a_uc_de_computa_o_m_vel_n_nvers_o_1_0">Aplicação desenvolvida por Pedro Vilares e Inês Lopes para a UC de Computação Móvel.\n\nVersão 1.0</string>
+    <string name="tempo">Tempo</string>
+    <string name="resumo_da_atividade">Resumo da Atividade</string>
+    <string name="calorias">Calorias:</string>
+    <string name="passos_dois_pontos">Passos:</string>
+    <string name="dist_ncia">Distância:</string>
+    <string name="tempo_dois_pontos">Tempo:</string>
+    <string name="nome_dois_pontos">Nome:</string>
+    <string name="idade_dois_pontos">Idade:</string>
+    <string name="peso_dois_pts">Peso:</string>
+    <string name="altura_dois_pts">Altura:</string>
+    <string name="editar_dados_pessoais">Editar Dados Pessoais</string>
+    <string name="idade">Idade:</string>
+    <string name="concluir">Concluir</string>
+    <string name="idioma">" Idioma  "</string>
+
+    <string-array name="exercises">
+        <item>Caminhada</item>
+        <item>Corrida</item>
+        <item>Ciclismo</item>
+    </string-array>
+
+    <string-array name="medicoes">
+        <item>Sono</item>
+        <item>Peso</item>
+        <item>IMC</item>
+        <item>Passos</item>
+        <item>Distância</item>
+        <item>Calorias</item>
+        <item>Batimento Cardíaco</item>
+        <item>Pressão Arterial</item>
+        <item>Glicemia</item>
+        <item>Altura</item>
+    </string-array>
 </resources>
