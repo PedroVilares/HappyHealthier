@@ -1,4 +1,4 @@
-package com.example.happyhealthier;
+package com.example.happyhealthier.data_activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -9,6 +9,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.example.happyhealthier.PointValue;
+import com.example.happyhealthier.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -24,9 +26,10 @@ import com.jjoe64.graphview.series.LineGraphSeries;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class imcActivity extends AppCompatActivity {
+public class CaloriasActivity extends AppCompatActivity {
 
-
+    EditText yValue;
+    Button btn_insert;
 
     FirebaseDatabase database;
     DatabaseReference reference;
@@ -38,10 +41,12 @@ public class imcActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_imc);
+        setContentView(R.layout.activity_calorias);
+
         Intent intent1 = getIntent();
 
-
+        yValue = (EditText) findViewById(R.id.pressaoMaxima);
+        btn_insert = (Button) findViewById(R.id.btnInsert);
         graphView = (GraphView) findViewById(R.id.graph);
 
         series = new LineGraphSeries();
@@ -58,9 +63,9 @@ public class imcActivity extends AppCompatActivity {
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         database = FirebaseDatabase.getInstance();
-        reference = database.getReference(user.getUid()).child("IMC");
+        reference = database.getReference(user.getUid()).child("Calorias");
 
-
+        setListeners();
 
         graphView.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter(){
             @Override
@@ -74,7 +79,20 @@ public class imcActivity extends AppCompatActivity {
         });
     }
 
+    private void setListeners() {
+        btn_insert.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String id = reference.push().getKey();
+                long x = new Date().getTime();
+                double y =Double.parseDouble(yValue.getText().toString());
 
+                PointValue pointValue = new PointValue(x,y);
+                reference.child(id).setValue(pointValue);
+
+            }
+        });
+    }
 
     @Override
     protected void onStart(){

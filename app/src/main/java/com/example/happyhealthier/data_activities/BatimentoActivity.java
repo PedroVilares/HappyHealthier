@@ -1,13 +1,16 @@
-package com.example.happyhealthier;
+package com.example.happyhealthier.data_activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.example.happyhealthier.PointValue;
+import com.example.happyhealthier.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -23,7 +26,7 @@ import com.jjoe64.graphview.series.LineGraphSeries;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class SonoActivity extends AppCompatActivity {
+public class BatimentoActivity extends AppCompatActivity {
 
     EditText yValue;
     Button btn_insert;
@@ -38,9 +41,9 @@ public class SonoActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sono);
+        setContentView(R.layout.activity_batimento);
 
-        yValue = findViewById(R.id.editTextSono);
+        yValue = findViewById(R.id.pressaoMaxima);
         btn_insert = findViewById(R.id.btnInsert);
         graphView = findViewById(R.id.graph);
 
@@ -57,9 +60,13 @@ public class SonoActivity extends AppCompatActivity {
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         database = FirebaseDatabase.getInstance();
-        reference = database.getReference(user.getUid()).child("Sono");
+        reference = database.getReference(user.getUid()).child("Batimento");
 
         setListeners();
+
+        graphView.getViewport().setYAxisBoundsManual(true);
+        graphView.getViewport().setMaxY(300);
+        graphView.getViewport().setMinY(50);
 
         graphView.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter(){
             @Override
@@ -71,7 +78,6 @@ public class SonoActivity extends AppCompatActivity {
                 }
             }
         });
-
     }
 
     private void setListeners() {
@@ -118,5 +124,4 @@ public class SonoActivity extends AppCompatActivity {
             }
         });
     }
-
 }

@@ -1,15 +1,17 @@
-package com.example.happyhealthier;
+package com.example.happyhealthier.data_activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
+import com.example.happyhealthier.PointValue;
+import com.example.happyhealthier.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -25,7 +27,7 @@ import com.jjoe64.graphview.series.LineGraphSeries;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class GlicemiaActivity extends AppCompatActivity {
+public class DistanciaActivity extends AppCompatActivity {
 
     EditText yValue;
     Button btn_insert;
@@ -40,7 +42,8 @@ public class GlicemiaActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_glicemia);
+        setContentView(R.layout.activity_distancia);
+
         Intent intent1 = getIntent();
 
         yValue = (EditText) findViewById(R.id.pressaoMaxima);
@@ -58,14 +61,10 @@ public class GlicemiaActivity extends AppCompatActivity {
         series.setDrawDataPoints(true);
         //series.setDataPointsRadius(17);
 
-        graphView.getViewport().setYAxisBoundsManual(true);
-        graphView.getViewport().setMaxY(300);
-        graphView.getViewport().setMinY(50);
-
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         database = FirebaseDatabase.getInstance();
-        reference = database.getReference(user.getUid()).child("Glicémia");
+        reference = database.getReference(user.getUid()).child("Distância");
 
         setListeners();
 
@@ -92,12 +91,6 @@ public class GlicemiaActivity extends AppCompatActivity {
                 PointValue pointValue = new PointValue(x,y);
                 reference.child(id).setValue(pointValue);
 
-                if(y <= 99){
-                    Toast.makeText(getApplicationContext(),"Níveis de açucar normais. Mantenha um estilo de vida saudável!",Toast.LENGTH_LONG).show();
-                }else{
-                    Toast.makeText(getApplicationContext(),"Níveis de açucar elevados. Pratique um estilo de vida saudável!",Toast.LENGTH_LONG).show();
-                }
-
             }
         });
     }
@@ -117,6 +110,7 @@ public class GlicemiaActivity extends AppCompatActivity {
                     PointValue pointValues = myDataSnapshot.getValue(PointValue.class);
 
                     dp[index] = new DataPoint(pointValues.getxValue(), pointValues.getyValue());
+                    Log.e("grafico", String.valueOf(myDataSnapshot.getChildren()));
                     index++;
                 }
 

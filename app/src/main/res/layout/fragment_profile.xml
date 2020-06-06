@@ -34,7 +34,7 @@
         android:id="@+id/editUserInfo"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_marginStart="328dp"
+        android:layout_marginStart="300dp"
         android:layout_marginTop="280dp"
         android:background="@drawable/circle_edit_button"
         android:src="@android:drawable/ic_menu_edit"

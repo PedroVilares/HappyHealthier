@@ -13,6 +13,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.BODY_SENSORS"/>
 
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
@@ -25,20 +26,20 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
-        <activity android:name=".PressaoActivity"/>
-        <activity android:name=".PesoActivity" />
-        <activity android:name=".PassosActivity" />
-        <activity android:name=".imcActivity" />
-        <activity android:name=".GlicemiaActivity" />
-        <activity android:name=".DistanciaActivity" />
-        <activity android:name=".CaloriasActivity" />
-        <activity android:name=".BatimentoActivity" />
-        <activity android:name=".AlturaActivity" />
-        <activity android:name=".SonoActivity" />
+        <activity android:name=".data_activities.PressaoActivity"/>
+        <activity android:name=".data_activities.PesoActivity" />
+        <activity android:name=".data_activities.PassosActivity" />
+        <activity android:name=".data_activities.imcActivity" />
+        <activity android:name=".data_activities.GlicemiaActivity" />
+        <activity android:name=".data_activities.DistanciaActivity" />
+        <activity android:name=".data_activities.CaloriasActivity" />
+        <activity android:name=".data_activities.BatimentoActivity" />
+        <activity android:name=".data_activities.AlturaActivity" />
+        <activity android:name=".data_activities.SonoActivity" />
         <activity android:name=".initial_pages.LauncherScreens">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
+
             </intent-filter>
         </activity>
 
@@ -49,8 +50,7 @@
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
-
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <receiver

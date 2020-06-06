@@ -1,4 +1,4 @@
-package com.example.happyhealthier;
+package com.example.happyhealthier.data_activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,6 +11,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.happyhealthier.PointValue;
+import com.example.happyhealthier.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -89,7 +91,7 @@ public class PressaoActivity extends AppCompatActivity {
         seriesMin.setColor(Color.rgb(245, 126, 66));
         seriesMin.setTitle("Pressão Arterial Mínima");
         databaseMin = FirebaseDatabase.getInstance();
-        referenceMin = databaseMin.getReference("PressaoMin");
+        referenceMin = databaseMin.getReference(user.getUid()).child("PressaoMin");
 
         graphView.getViewport().setYAxisBoundsManual(true);
         graphView.getViewport().setMaxY(300);

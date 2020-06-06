@@ -206,12 +206,11 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.e("novo","log in");
+
         if (requestCode == REQUEST_CODE){
             IdpResponse response = IdpResponse.fromResultIntent(data);
 
             if (resultCode == RESULT_OK){
-
 
                 if(response.isNewUser()){
                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();

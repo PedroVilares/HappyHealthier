@@ -1,4 +1,4 @@
-package com.example.happyhealthier;
+package com.example.happyhealthier.data_activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -8,7 +8,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
+import com.example.happyhealthier.PointValue;
+import com.example.happyhealthier.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -24,7 +27,7 @@ import com.jjoe64.graphview.series.LineGraphSeries;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class BatimentoActivity extends AppCompatActivity {
+public class GlicemiaActivity extends AppCompatActivity {
 
     EditText yValue;
     Button btn_insert;
@@ -39,11 +42,12 @@ public class BatimentoActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_batimento);
+        setContentView(R.layout.activity_glicemia);
+        Intent intent1 = getIntent();
 
-        yValue = findViewById(R.id.pressaoMaxima);
-        btn_insert = findViewById(R.id.btnInsert);
-        graphView = findViewById(R.id.graph);
+        yValue = (EditText) findViewById(R.id.pressaoMaxima);
+        btn_insert = (Button) findViewById(R.id.btnInsert);
+        graphView = (GraphView) findViewById(R.id.graph);
 
         series = new LineGraphSeries();
         graphView.addSeries(series);
@@ -56,15 +60,16 @@ public class BatimentoActivity extends AppCompatActivity {
         series.setDrawDataPoints(true);
         //series.setDataPointsRadius(17);
 
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        database = FirebaseDatabase.getInstance();
-        reference = database.getReference(user.getUid()).child("Batimento");
-
-        setListeners();
-
         graphView.getViewport().setYAxisBoundsManual(true);
         graphView.getViewport().setMaxY(300);
         graphView.getViewport().setMinY(50);
+
+
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        database = FirebaseDatabase.getInstance();
+        reference = database.getReference(user.getUid()).child("Glicémia");
+
+        setListeners();
 
         graphView.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter(){
             @Override
@@ -88,6 +93,12 @@ public class BatimentoActivity extends AppCompatActivity {
 
                 PointValue pointValue = new PointValue(x,y);
                 reference.child(id).setValue(pointValue);
+
+                if(y <= 99){
+                    Toast.makeText(getApplicationContext(),"Níveis de açucar normais. Mantenha um estilo de vida saudável!",Toast.LENGTH_LONG).show();
+                }else{
+                    Toast.makeText(getApplicationContext(),"Níveis de açucar elevados. Pratique um estilo de vida saudável!",Toast.LENGTH_LONG).show();
+                }
 
             }
         });

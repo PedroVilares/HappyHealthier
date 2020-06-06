@@ -10,6 +10,7 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
+import com.example.happyhealthier.MainActivity;
 import com.example.happyhealthier.main_fragments.ExerciseFragment;
 
 public class ExerciseService extends Service {

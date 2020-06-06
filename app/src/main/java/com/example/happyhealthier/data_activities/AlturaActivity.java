@@ -1,4 +1,4 @@
-package com.example.happyhealthier;
+package com.example.happyhealthier.data_activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -9,6 +9,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.example.happyhealthier.PointValue;
+import com.example.happyhealthier.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -24,7 +26,7 @@ import com.jjoe64.graphview.series.LineGraphSeries;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class CaloriasActivity extends AppCompatActivity {
+public class AlturaActivity extends AppCompatActivity {
 
     EditText yValue;
     Button btn_insert;
@@ -39,9 +41,8 @@ public class CaloriasActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_calorias);
+        setContentView(R.layout.activity_altura);
 
-        Intent intent1 = getIntent();
 
         yValue = (EditText) findViewById(R.id.pressaoMaxima);
         btn_insert = (Button) findViewById(R.id.btnInsert);
@@ -58,10 +59,13 @@ public class CaloriasActivity extends AppCompatActivity {
         series.setDrawDataPoints(true);
         //series.setDataPointsRadius(17);
 
+        graphView.getViewport().setYAxisBoundsManual(true);
+        graphView.getViewport().setMaxY(2);
+
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         database = FirebaseDatabase.getInstance();
-        reference = database.getReference(user.getUid()).child("Calorias");
+        reference = database.getReference(user.getUid()).child("Altura");
 
         setListeners();
 
@@ -83,11 +87,10 @@ public class CaloriasActivity extends AppCompatActivity {
             public void onClick(View view) {
                 String id = reference.push().getKey();
                 long x = new Date().getTime();
-                double y =Double.parseDouble(yValue.getText().toString());
+                double y = Double.parseDouble(yValue.getText().toString());
 
                 PointValue pointValue = new PointValue(x,y);
                 reference.child(id).setValue(pointValue);
-
             }
         });
     }

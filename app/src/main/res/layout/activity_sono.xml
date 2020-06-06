@@ -24,10 +24,10 @@
 
     <com.jjoe64.graphview.GraphView
         android:id="@+id/graph"
-        android:layout_width="380dp"
+        android:layout_width="340dp"
         android:layout_height="302dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="7dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
         android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

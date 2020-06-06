@@ -1,15 +1,16 @@
-package com.example.happyhealthier;
+package com.example.happyhealthier.data_activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.example.happyhealthier.PointValue;
+import com.example.happyhealthier.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -25,7 +26,7 @@ import com.jjoe64.graphview.series.LineGraphSeries;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class DistanciaActivity extends AppCompatActivity {
+public class PesoActivity extends AppCompatActivity {
 
     EditText yValue;
     Button btn_insert;
@@ -40,13 +41,12 @@ public class DistanciaActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_distancia);
-
+        setContentView(R.layout.activity_peso);
         Intent intent1 = getIntent();
 
-        yValue = (EditText) findViewById(R.id.pressaoMaxima);
-        btn_insert = (Button) findViewById(R.id.btnInsert);
-        graphView = (GraphView) findViewById(R.id.graph);
+        yValue = findViewById(R.id.pressaoMaxima);
+        btn_insert = findViewById(R.id.btnInsert);
+        graphView = findViewById(R.id.graph);
 
         series = new LineGraphSeries();
         graphView.addSeries(series);
@@ -59,10 +59,9 @@ public class DistanciaActivity extends AppCompatActivity {
         series.setDrawDataPoints(true);
         //series.setDataPointsRadius(17);
 
-
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         database = FirebaseDatabase.getInstance();
-        reference = database.getReference(user.getUid()).child("Distância");
+        reference = database.getReference(user.getUid()).child("Peso");
 
         setListeners();
 
@@ -84,7 +83,7 @@ public class DistanciaActivity extends AppCompatActivity {
             public void onClick(View view) {
                 String id = reference.push().getKey();
                 long x = new Date().getTime();
-                double y =Double.parseDouble(yValue.getText().toString());
+                double y = Double.parseDouble(yValue.getText().toString());
 
                 PointValue pointValue = new PointValue(x,y);
                 reference.child(id).setValue(pointValue);
@@ -108,7 +107,6 @@ public class DistanciaActivity extends AppCompatActivity {
                     PointValue pointValues = myDataSnapshot.getValue(PointValue.class);
 
                     dp[index] = new DataPoint(pointValues.getxValue(), pointValues.getyValue());
-                    Log.e("grafico", String.valueOf(myDataSnapshot.getChildren()));
                     index++;
                 }
 

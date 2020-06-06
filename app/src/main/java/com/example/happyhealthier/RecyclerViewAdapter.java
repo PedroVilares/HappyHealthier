@@ -12,6 +12,17 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.happyhealthier.data_activities.AlturaActivity;
+import com.example.happyhealthier.data_activities.BatimentoActivity;
+import com.example.happyhealthier.data_activities.CaloriasActivity;
+import com.example.happyhealthier.data_activities.DistanciaActivity;
+import com.example.happyhealthier.data_activities.GlicemiaActivity;
+import com.example.happyhealthier.data_activities.PassosActivity;
+import com.example.happyhealthier.data_activities.PesoActivity;
+import com.example.happyhealthier.data_activities.PressaoActivity;
+import com.example.happyhealthier.data_activities.SonoActivity;
+import com.example.happyhealthier.data_activities.imcActivity;
+
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.MyViewHolder> {
 
     int []arr;
