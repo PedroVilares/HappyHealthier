@@ -49,6 +49,7 @@
     <string name="idade">Idade:</string>
     <string name="concluir">Concluir</string>
     <string name="idioma">" Idioma  "</string>
+    <string name="partilhar_dados">Partilhar Dados</string>
 
     <string-array name="exercises">
         <item>Caminhada</item>

@@ -49,6 +49,7 @@
     <string name="concluir">Finish</string>
     <string name="idioma">" Language           "</string>
     <string name="aplica_o_desenvolvida_por_pedro_vilares_e_in_s_lopes_para_a_uc_de_computa_o_m_vel_n_nvers_o_1_0">Application developed by Pedro Vilares and Inês Lopes.</string>
+    <string name="partilhar_dados">Share Data</string>
 
     <string-array name="exercises">
         <item>Walk</item>
