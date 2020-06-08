@@ -6,6 +6,7 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -32,6 +33,7 @@ import androidx.fragment.app.Fragment;
 import com.example.happyhealthier.initial_pages.LauncherScreens;
 import com.example.happyhealthier.main_fragments.AboutFragment;
 import com.example.happyhealthier.main_fragments.ExerciseFragment;
+import com.example.happyhealthier.main_fragments.HealthFragment;
 import com.example.happyhealthier.main_fragments.MeasurementsFragment;
 import com.example.happyhealthier.main_fragments.ProfileFragment;
 import com.example.happyhealthier.main_fragments.SettingsFragment;
@@ -43,6 +45,11 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -53,8 +60,10 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -69,7 +78,6 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
     private static final int REQUEST_CODE = 1;
     private ListenerRegistration userdataListener;
     List<AuthUI.IdpConfig> providers;
-    Button mSignOutButton;
     DrawerLayout drawer;
     LinearLayout layout;
     TextView navUsername;
@@ -139,6 +147,9 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
                     case R.id.nav_exercise:
                         launchExerciseFragment();
                         break;
+                    case R.id.nav_health:
+                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HealthFragment()).commit();
+                        break;
                     case R.id.nav_profile:
                         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ProfileFragment()).commit();
                         break;
@@ -154,46 +165,9 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
             }
         });
 
-        //Notifications//
-        Intent intent = new Intent(getApplicationContext(),MyReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(),0,intent,0);
-
-        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-        Calendar sonoStartTime = Calendar.getInstance();
-        Calendar now = Calendar.getInstance();
-        sonoStartTime.set(Calendar.HOUR_OF_DAY,9);
-        sonoStartTime.set(Calendar.MINUTE, 0);
-        sonoStartTime.set(Calendar.SECOND,0);
-        if (now.after(sonoStartTime)) {
-            sonoStartTime.add(Calendar.DATE,1);
-        }
-        Log.e("alarm", String.valueOf(sonoStartTime));
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,sonoStartTime.getTimeInMillis(),AlarmManager.INTERVAL_DAY,pendingIntent);
-
-
-//        mSignOutButton = findViewById(R.id.signOutButton);
-//        mSignOutButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                AuthUI.getInstance().signOut(MainActivity.this).
-//                addOnCompleteListener(new OnCompleteListener<Void>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<Void> task) {
-//                        Toast.makeText(MainActivity.this, "Logged Out",Toast.LENGTH_SHORT).show();
-//                        mSignOutButton.setEnabled(false);
-//                        showSignInOptions();
-//                    }
-//                }).addOnFailureListener(new OnFailureListener() {
-//                    @Override
-//                    public void onFailure(@NonNull Exception e) {
-//                        Toast.makeText(MainActivity.this, "Failed to Log Out",Toast.LENGTH_SHORT).show();
-//                    }
-//                });
-//            }
-//        });
     }
 
-    private void showSignInOptions() {
+    public void showSignInOptions() {
         startActivityForResult(
                 AuthUI.getInstance().createSignInIntentBuilder().
                         setAvailableProviders(providers).
@@ -321,6 +295,42 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
                 }
             });
         }
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference reference = database.getReference(user.getUid()).child("Sono");
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot sleepValue : dataSnapshot.getChildren()){
+                    PointValue pointValues = sleepValue.getValue(PointValue.class);
+
+                    long fireTime = pointValues.getxValue();
+
+                    //Notifications//
+                    Intent intent = new Intent(getApplicationContext(),MyReceiver.class);
+                    PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(),0,intent,0);
+
+                    AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+                    Calendar sonoStartTime = Calendar.getInstance();
+                    Calendar now = Calendar.getInstance();
+                    sonoStartTime.set(Calendar.HOUR_OF_DAY,9);
+                    sonoStartTime.set(Calendar.MINUTE, 0);
+                    sonoStartTime.set(Calendar.SECOND,0);
+                    if (now.after(sonoStartTime)) {
+                        sonoStartTime.add(Calendar.DATE,1);
+                    }
+                    if(sonoStartTime.getTimeInMillis()-fireTime < 32400000){
+                        sonoStartTime.add(Calendar.DATE,1);
+                    }
+                    Log.e("alarm", String.valueOf(sonoStartTime.getTimeInMillis()));
+                    alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,sonoStartTime.getTimeInMillis(),AlarmManager.INTERVAL_DAY,pendingIntent);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     @Override

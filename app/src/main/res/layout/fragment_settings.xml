@@ -37,4 +37,14 @@
         app:layout_constraintTop_toBottomOf="@+id/textView19"
         android:showText="true"/>
 
+    <Button
+        android:id="@+id/signOutButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="66dp"
+        android:text="@string/sign_out"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/switch1" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

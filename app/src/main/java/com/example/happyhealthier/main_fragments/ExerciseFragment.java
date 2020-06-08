@@ -94,9 +94,6 @@ public class ExerciseFragment extends Fragment implements AdapterView.OnItemSele
     private ArrayList<Polyline> polylines = new ArrayList<>();
     private ArrayList<LatLng> allLatLngs = new ArrayList<>();
 
-    //TODO: integrar no Firebase
-
-
     @SuppressLint("MissingPermission")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

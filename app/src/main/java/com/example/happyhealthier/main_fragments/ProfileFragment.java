@@ -194,23 +194,22 @@ public class ProfileFragment extends Fragment implements EasyPermissions.Permiss
                     if (userAge == 1){
                         userAgeText.setText(R.string.por_definir);
                     } else {
-                        userAgeText.setText(String.format("%s anos", String.valueOf(userAge.intValue())));
+                        userAgeText.setText(String.format("%s anos", userAge.intValue()));
                     }
                     if (userWeight == 1){
                         userWeightText.setText(R.string.por_definir);
                     } else {
-                        userWeightText.setText(String.format("%s kg", String.valueOf(userWeight)));
+                        userWeightText.setText(String.format("%s kg", userWeight));
                     }
                     if (userHeight == 1) {
                         userHeightText.setText(R.string.por_definir);
                     } else {
-                        userHeightText.setText(String.format("%s m", String.valueOf( userHeight)));
+                        userHeightText.setText(String.format("%s m", userHeight));
                     }
 
                     //IMC//
                     imcUnitsText.setText("kg/m^2");
                     double IMC = imcCalculator(userWeight,userHeight);
-                    Log.d("imc", String.valueOf(IMC));
                     imcValueText.setText(String.format("%.1f",IMC));
                     if (IMC>2 && IMC<=18.5) {
                         imcDescriptionText.setText("Está abaixo do peso ideal,\nconsidere ingerir mais\ncalorias diariamente!");

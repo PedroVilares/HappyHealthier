@@ -48,7 +48,6 @@ public class ImagePickerFragment extends BottomSheetDialogFragment {
     private static final int CAMERA_REQUEST_CODE = 1034;
     Button cameraButton, galleryButton;
     Uri profilePic;
-    String pathToFile;
     private ProgressDialog progressDialog;
 
 
@@ -75,17 +74,6 @@ public class ImagePickerFragment extends BottomSheetDialogFragment {
                 Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
                 startActivityForResult(intent, CAMERA_REQUEST_CODE);
-//                Intent intent = new Intent();
-//                intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
-//                File photoFile = null;
-//                photoFile = createPhotoFile();
-//                if (photoFile != null) {
-//                    pathToFile = photoFile.getAbsolutePath();
-//                    Uri getPhotoUri = FileProvider.getUriForFile(requireContext(),"com.example.happyhealthier.fileprovider",photoFile);
-//                    intent.putExtra(MediaStore.EXTRA_OUTPUT,getPhotoUri);
-//
-//                    startActivityForResult(intent, 2);
-//                }
             }
         });
 

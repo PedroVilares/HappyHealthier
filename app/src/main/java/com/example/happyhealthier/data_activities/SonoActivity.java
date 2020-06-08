@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -102,7 +103,7 @@ public class SonoActivity extends AppCompatActivity {
                 int index = 0;
 
                 for (DataSnapshot myDataSnapshot : dataSnapshot.getChildren()) {
-
+                    Log.e("sono",myDataSnapshot.toString());
                     PointValue pointValues = myDataSnapshot.getValue(PointValue.class);
 
                     dp[index] = new DataPoint(pointValues.getxValue(), pointValues.getyValue());
