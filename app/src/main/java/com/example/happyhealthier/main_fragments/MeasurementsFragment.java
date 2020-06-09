@@ -40,6 +40,7 @@ public class MeasurementsFragment extends Fragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_measurements, container, false);
 
+
         recyclerView = v.findViewById(R.id.recyclerView);
         text_arr = getResources().getStringArray(R.array.medicoes);
 

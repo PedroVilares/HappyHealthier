@@ -2,13 +2,23 @@ package com.example.happyhealthier.data_activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
+import com.example.happyhealthier.MainActivity;
 import com.example.happyhealthier.PointValue;
 import com.example.happyhealthier.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -26,7 +36,7 @@ import com.jjoe64.graphview.series.LineGraphSeries;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class BatimentoActivity extends AppCompatActivity {
+public class BatimentoActivity extends AppCompatActivity implements SensorEventListener{
 
     EditText yValue;
     Button btn_insert;
@@ -42,6 +52,8 @@ public class BatimentoActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_batimento);
+
+        ActivityCompat.requestPermissions(BatimentoActivity.this,new String[] {Manifest.permission.BODY_SENSORS},1);
 
         yValue = findViewById(R.id.pressaoMaxima);
         btn_insert = findViewById(R.id.btnInsert);
@@ -123,5 +135,38 @@ public class BatimentoActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        yValue.setText(String.format("%s bpm",event.values[0]));
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,String permissions[], int[] grantResults) {
+        if (requestCode == 1) {// If request is cancelled, the result arrays are empty.
+            if (grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                SensorManager sensorManager = (SensorManager) getSystemService(Activity.SENSOR_SERVICE);
+                Sensor heartbeatSensor = sensorManager.getDefaultSensor(Sensor.TYPE_HEART_RATE);
+                if (heartbeatSensor != null) {
+                    sensorManager.registerListener((SensorEventListener) this,heartbeatSensor, SensorManager.SENSOR_DELAY_UI);
+                    Toast.makeText(getApplicationContext(),"Heartbeat sensor found!",Toast.LENGTH_SHORT).show();
+
+                } else {
+                    Toast.makeText(getApplicationContext(),"Heartbeat sensor not found!",Toast.LENGTH_SHORT).show();
+                }
+            } else {
+
+                Toast.makeText(BatimentoActivity.this, "Permissão recusada para os sensores corporais", Toast.LENGTH_SHORT).show();
+            }
+            return;
+
+        }
     }
 }

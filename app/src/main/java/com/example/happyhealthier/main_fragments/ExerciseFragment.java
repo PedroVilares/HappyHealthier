@@ -1,10 +1,12 @@
 package com.example.happyhealthier.main_fragments;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Notification;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -13,9 +15,13 @@ import android.hardware.SensorManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.cardview.widget.CardView;
+import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
@@ -35,6 +41,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.happyhealthier.ExerciseService;
+import com.example.happyhealthier.MainActivity;
 import com.example.happyhealthier.PointValue;
 import com.example.happyhealthier.R;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -53,9 +60,17 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Objects;
+
+import static android.Manifest.*;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -94,6 +109,7 @@ public class ExerciseFragment extends Fragment implements AdapterView.OnItemSele
     private ArrayList<Polyline> polylines = new ArrayList<>();
     private ArrayList<LatLng> allLatLngs = new ArrayList<>();
 
+    @RequiresApi(api = Build.VERSION_CODES.P)
     @SuppressLint("MissingPermission")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -223,8 +239,7 @@ public class ExerciseFragment extends Fragment implements AdapterView.OnItemSele
                                 }
                             }
                         });
-                //startService(kmsDone);
-
+                startService(0,String.valueOf(0));
             }
         });
 
@@ -308,7 +323,7 @@ public class ExerciseFragment extends Fragment implements AdapterView.OnItemSele
                         Log.e("realtime","Com Sucesso");
                     }
                 });
-                //stopService(v);
+                stopService(v);
                 sendNotificationExercise(v,calorieCalculator(exerciseChosen,exerciseTimeLong));
 
             }
@@ -353,7 +368,7 @@ public class ExerciseFragment extends Fragment implements AdapterView.OnItemSele
 
         Notification notification = new NotificationCompat.Builder(getContext(),"notificacao_exercicio")
                 .setContentTitle("Está de Parabéns!")
-                .setContentText("Ufa! Bom esforço, queimou "+cals +" calorias!")
+                .setContentText("Ufa! Bom esforço, queimou "+ cals +" calorias!")
                 .setSmallIcon(R.drawable.ic_exercise)
                 .build();
 
@@ -401,18 +416,16 @@ public class ExerciseFragment extends Fragment implements AdapterView.OnItemSele
     @Override
     public void onSensorChanged(SensorEvent event) {
         if (isExercising){
-            Log.i("oi","Sensor reading");
             if(stepsInitial<1) {
                 stepsInitial = (int) event.values[0];
-                Log.i("oi",String.valueOf(stepsInitial));
             }
 
+            String time = chronometer.getText().toString();
             stepsTaken=(int) event.values[0]-stepsInitial;
             steps.setText(String.valueOf(stepsTaken));
             kmsDone = stepsTaken / 1312.34;
             kms.setText(String.format("%.2f km", kmsDone));
-            startService(kmsDone);
-
+            startService(kmsDone,time);
         }
     }
 
@@ -426,37 +439,55 @@ public class ExerciseFragment extends Fragment implements AdapterView.OnItemSele
         int walkingMET = 4;
         int cyclingMET = 6;
 
-        double peso = 0;
+        final double[] peso = {0};
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        DocumentReference userdataDocument = db.collection(Objects.requireNonNull(user).getUid()).document("user_data");
+        userdataDocument.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+                if (e != null) {
+                    Toast.makeText(getContext(), "Erro ao carregar dados\n" + e, Toast.LENGTH_SHORT).show();
+                }
+                assert documentSnapshot != null;
+                if (documentSnapshot.exists()) {
+                    peso[0] = documentSnapshot.getDouble("Peso");
+
+            }
+        }});
         double caloriesPerMin = 0;
         double exerciseTime = (double) exerciseTimeLong;
 
         switch (exerciseType) {
             case "Corrida":
-                caloriesPerMin = (runningMET*peso *3.5)/200;
+                caloriesPerMin = (runningMET* peso[0] *3.5)/200;
                 break;
 
             case "Caminhada":
-                caloriesPerMin = (walkingMET*peso*3.5)/200;
+                caloriesPerMin = (walkingMET* peso[0] *3.5)/200;
                 break;
 
             case "Ciclismo":
-                caloriesPerMin = (cyclingMET*peso*3.5)/200;
+                caloriesPerMin = (cyclingMET* peso[0] *3.5)/200;
         }
 
 
         return caloriesPerMin*((exerciseTime/1000)/60);
     }
 
-    private void startService(double kms){
+    private void startService(double kms,String time){
 
         Intent serviceIntent = new Intent(getContext(), ExerciseService.class);
         serviceIntent.putExtra("distance",String.valueOf(kms));
+        serviceIntent.putExtra("time",time);
 
         requireActivity().startService(serviceIntent);
     }
 
     public void stopService(View v){
         Intent serviceIntent = new Intent(getContext(),ExerciseService.class);
-        getActivity().stopService(serviceIntent);
+        requireActivity().stopService(serviceIntent);
+        Toast.makeText(getContext(),"Fim do Exercício",Toast.LENGTH_SHORT).show();
+
     }
 }

@@ -30,9 +30,13 @@ public class App extends Application {
             channel2.enableLights(true);
             channel2.setLightColor(Color.RED);
 
+            NotificationChannel channel3 = new NotificationChannel("servico_exercicio","ExercicioService",NotificationManager.IMPORTANCE_DEFAULT);
+
+
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel1);
             notificationManager.createNotificationChannel(channel2);
+            notificationManager.createNotificationChannel(channel3);
         }
     }
 }

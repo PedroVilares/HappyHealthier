@@ -5,7 +5,9 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
+import android.os.SystemClock;
 import android.util.Log;
+import android.widget.RemoteViews;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
@@ -19,20 +21,23 @@ public class ExerciseService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
 
         String exerciseDistance = intent.getStringExtra("distance");
+        String exerciseTime = intent.getStringExtra("time");
         Log.e("service",exerciseDistance);
 
-        Intent notificationIntent = new Intent(this, MainActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this,0,notificationIntent,0);
+        RemoteViews collapsedView = new RemoteViews(getPackageName(),R.layout.exercise_service_collpased);
+        collapsedView.setTextViewText(R.id.serviceDistanceText,String.format("%.2f km",Double.parseDouble(exerciseDistance)));
+        collapsedView.setChronometer(R.id.serviceChronometer, SystemClock.elapsedRealtime(),"%s",true);
 
-        Notification notification = new NotificationCompat.Builder(this,"notificacao_exercicio")
-                .setContentTitle("Exercício")
-                .setContentText(exerciseDistance)
-                .setContentIntent(pendingIntent)
+
+        Notification notification = new NotificationCompat.Builder(this,"servico_exercicio")
+                .setCustomContentView(collapsedView)
+                .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
+                .setSmallIcon(R.drawable.ic_exercise)
                 .build();
 
         startForeground(1,notification);
 
-        return START_NOT_STICKY;
+        return START_REDELIVER_INTENT;
     }
 
     @Nullable

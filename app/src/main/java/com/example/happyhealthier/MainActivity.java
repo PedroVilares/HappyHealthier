@@ -17,6 +17,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -31,6 +32,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
 import com.example.happyhealthier.initial_pages.LauncherScreens;
+import com.example.happyhealthier.initial_pages.WelcomeActivity;
 import com.example.happyhealthier.main_fragments.AboutFragment;
 import com.example.happyhealthier.main_fragments.ExerciseFragment;
 import com.example.happyhealthier.main_fragments.HealthFragment;
@@ -76,6 +78,7 @@ import pub.devrel.easypermissions.EasyPermissions;
 public class MainActivity extends AppCompatActivity implements EasyPermissions.PermissionCallbacks{
 
     private static final int REQUEST_CODE = 1;
+    private static final int SPLASH_TIME = 1000;
     private ListenerRegistration userdataListener;
     List<AuthUI.IdpConfig> providers;
     DrawerLayout drawer;
@@ -121,6 +124,43 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
                         //profilePic.setBackgroundColor(Color.TRANSPARENT);
                     }
                 });}
+
+
+            FirebaseDatabase database = FirebaseDatabase.getInstance();
+            DatabaseReference reference = database.getReference(user.getUid()).child("Sono");
+            reference.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    for (DataSnapshot sleepValue : dataSnapshot.getChildren()){
+                        PointValue pointValues = sleepValue.getValue(PointValue.class);
+
+                        long fireTime = pointValues.getxValue();
+
+                        Intent intent = new Intent(getApplicationContext(),MyReceiver.class);
+                        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(),0,intent,0);
+
+                        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+                        Calendar sonoStartTime = Calendar.getInstance();
+                        Calendar now = Calendar.getInstance();
+                        sonoStartTime.set(Calendar.HOUR_OF_DAY,9);
+                        sonoStartTime.set(Calendar.MINUTE, 0);
+                        sonoStartTime.set(Calendar.SECOND,0);
+                        if (now.after(sonoStartTime)) {
+                            sonoStartTime.add(Calendar.DATE,1);
+                        }
+                        if(sonoStartTime.getTimeInMillis()-fireTime < 32400000){
+                            sonoStartTime.add(Calendar.DATE,1);
+                        }
+                        Log.e("alarm", String.valueOf(sonoStartTime.getTimeInMillis()));
+                        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,sonoStartTime.getTimeInMillis(),AlarmManager.INTERVAL_DAY,pendingIntent);
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
         }
 
 
@@ -247,7 +287,7 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
 
     @AfterPermissionGranted(123)
     private void launchExerciseFragment() {
-        String[] perms = {Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION};
+        String[] perms = {Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.FOREGROUND_SERVICE};
         if (EasyPermissions.hasPermissions(this,perms)){
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ExerciseFragment()).commit();
         } else {
@@ -295,42 +335,6 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
                 }
             });
         }
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference reference = database.getReference(user.getUid()).child("Sono");
-        reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot sleepValue : dataSnapshot.getChildren()){
-                    PointValue pointValues = sleepValue.getValue(PointValue.class);
-
-                    long fireTime = pointValues.getxValue();
-
-                    //Notifications//
-                    Intent intent = new Intent(getApplicationContext(),MyReceiver.class);
-                    PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(),0,intent,0);
-
-                    AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-                    Calendar sonoStartTime = Calendar.getInstance();
-                    Calendar now = Calendar.getInstance();
-                    sonoStartTime.set(Calendar.HOUR_OF_DAY,9);
-                    sonoStartTime.set(Calendar.MINUTE, 0);
-                    sonoStartTime.set(Calendar.SECOND,0);
-                    if (now.after(sonoStartTime)) {
-                        sonoStartTime.add(Calendar.DATE,1);
-                    }
-                    if(sonoStartTime.getTimeInMillis()-fireTime < 32400000){
-                        sonoStartTime.add(Calendar.DATE,1);
-                    }
-                    Log.e("alarm", String.valueOf(sonoStartTime.getTimeInMillis()));
-                    alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,sonoStartTime.getTimeInMillis(),AlarmManager.INTERVAL_DAY,pendingIntent);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
     }
 
     @Override
