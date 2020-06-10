@@ -1,2 +1,2 @@
 # HappyHealthier
-Projeto de Computação Móvel com a Nês <3
+Projeto de Computação Móvel com a Nês
