@@ -21,8 +21,6 @@ public class ExerciseService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
 
         String exerciseDistance = intent.getStringExtra("distance");
-        String exerciseTime = intent.getStringExtra("time");
-        Log.e("service",exerciseDistance);
 
         RemoteViews collapsedView = new RemoteViews(getPackageName(),R.layout.exercise_service_collpased);
         collapsedView.setTextViewText(R.id.serviceDistanceText,String.format("%.2f km",Double.parseDouble(exerciseDistance)));

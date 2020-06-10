@@ -98,6 +98,7 @@ public class ExerciseFragment extends Fragment implements AdapterView.OnItemSele
     private int stepsTaken = 0;
     private double kmsDone;
     private int stepsInitial = 0;
+    private double calories;
     private TextView distanceFinal, timeFinal, stepsFinal, caloriesFinal, exerciseFinal;
 
     //Location//
@@ -279,7 +280,7 @@ public class ExerciseFragment extends Fragment implements AdapterView.OnItemSele
                 card1.setVisibility(View.VISIBLE);
                 card2.setVisibility(View.INVISIBLE);
                 card3.setVisibility(View.VISIBLE);
-                distanceFinal.setText(String.format("%s km",String.valueOf(kmsDone)));
+                distanceFinal.setText(String.format("%.2f km", kmsDone));
                 String pronoun;
                 if(exerciseChosen.equals("Ciclismo")){
                     pronoun = "do ";
@@ -287,10 +288,12 @@ public class ExerciseFragment extends Fragment implements AdapterView.OnItemSele
                     pronoun = "da ";
                 }
                 String atividade = "Resumo " + pronoun + exerciseChosen;
+                calories = calorieCalculator(exerciseChosen,exerciseTimeLong);
+                Log.e("calories",String.valueOf(calories));
                 exerciseFinal.setText(atividade);
                 timeFinal.setText(String.valueOf(exerciseTime));
                 stepsFinal.setText(String.valueOf(stepsTaken));
-                caloriesFinal.setText(String.valueOf(calorieCalculator(exerciseChosen,exerciseTimeLong)));
+                caloriesFinal.setText(String.format("%.2f kcal",calories));
                 locationManager.removeUpdates(locationListener);
                 fusedLocationClient.getLastLocation().addOnSuccessListener(requireActivity(), new OnSuccessListener<Location>() {
                     @Override
@@ -313,18 +316,18 @@ public class ExerciseFragment extends Fragment implements AdapterView.OnItemSele
                 long x = new Date().getTime();
                 PointValue pointValuePassos = new PointValue(x,stepsTaken);
                 PointValue pointValueKms = new PointValue(x,kmsDone);
-                PointValue pointValueCals = new PointValue(x,calorieCalculator(exerciseChosen,exerciseTimeLong));
+                PointValue pointValueCals = new PointValue(x,calories);
 
                 referencePassos.child(idPassos).setValue(pointValuePassos);
                 referenceKms.child(idKms).setValue(pointValueKms);
                 referenceCals.child(idCals).setValue(pointValueCals).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        Log.e("realtime","Com Sucesso");
+                        //Log.e("realtime","Com Sucesso");
                     }
                 });
                 stopService(v);
-                sendNotificationExercise(v,calorieCalculator(exerciseChosen,exerciseTimeLong));
+                sendNotificationExercise(v,calories);
 
             }
         });
@@ -368,7 +371,7 @@ public class ExerciseFragment extends Fragment implements AdapterView.OnItemSele
 
         Notification notification = new NotificationCompat.Builder(getContext(),"notificacao_exercicio")
                 .setContentTitle("Está de Parabéns!")
-                .setContentText("Ufa! Bom esforço, queimou "+ cals +" calorias!")
+                .setContentText(String.format("Ufa! Bom esforço, queimou %.2f calorias!",cals))
                 .setSmallIcon(R.drawable.ic_exercise)
                 .build();
 
@@ -434,12 +437,13 @@ public class ExerciseFragment extends Fragment implements AdapterView.OnItemSele
 
     }
 
-    public double calorieCalculator(String exerciseType,long exerciseTimeLong){
-        int runningMET = 7;
-        int walkingMET = 4;
-        int cyclingMET = 6;
+    public double calorieCalculator(final String exerciseType, final long exerciseTimeLong){
+        final int runningMET = 7;
+        final int walkingMET = 4;
+        final int cyclingMET = 6;
 
-        final double[] peso = {0};
+        final double[] exerciseTime = {(double) exerciseTimeLong};
+        Log.e("tempo", String.valueOf((exerciseTime[0] /1000)/60));
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         DocumentReference userdataDocument = db.collection(Objects.requireNonNull(user).getUid()).document("user_data");
@@ -451,28 +455,28 @@ public class ExerciseFragment extends Fragment implements AdapterView.OnItemSele
                 }
                 assert documentSnapshot != null;
                 if (documentSnapshot.exists()) {
-                    peso[0] = documentSnapshot.getDouble("Peso");
+                    double caloriesPerMin = 0;
+                    double peso = documentSnapshot.getDouble("Peso");
 
+                    switch (exerciseType) {
+                        case "Corrida":
+                            caloriesPerMin = (runningMET* peso *3.5)/200;
+                            calories = caloriesPerMin *((exerciseTime[0] /1000)/60);
+                            break;
+
+                        case "Caminhada":
+                            caloriesPerMin = (walkingMET* peso *3.5)/200;
+                            calories = caloriesPerMin *((exerciseTime[0] /1000)/60);
+                            break;
+
+                        case "Ciclismo":
+                            caloriesPerMin = (cyclingMET* peso *3.5)/200;
+                            calories = caloriesPerMin *((exerciseTime[0] /1000)/60);
+                    }
             }
         }});
-        double caloriesPerMin = 0;
-        double exerciseTime = (double) exerciseTimeLong;
-
-        switch (exerciseType) {
-            case "Corrida":
-                caloriesPerMin = (runningMET* peso[0] *3.5)/200;
-                break;
-
-            case "Caminhada":
-                caloriesPerMin = (walkingMET* peso[0] *3.5)/200;
-                break;
-
-            case "Ciclismo":
-                caloriesPerMin = (cyclingMET* peso[0] *3.5)/200;
-        }
-
-
-        return caloriesPerMin*((exerciseTime/1000)/60);
+        Log.e("cpm", String.valueOf(calories));
+        return calories;
     }
 
     private void startService(double kms,String time){
